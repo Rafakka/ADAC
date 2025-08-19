@@ -35,7 +35,7 @@ def discar(numero):
     subprocess.run(cmd)
     print(f"Discando: {numero}")
     time.sleep(10)
-    atendido = True  # Pode evoluir com lógica real
+    atendido = foi_atendido(CELULAR) # Pode evoluir com lógica real
     return atendido
 
 def transferir(numero_transferencia):

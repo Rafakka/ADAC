@@ -1,0 +1,3 @@
+CELULAR = "emulador-5554"
+CSV_PATH = "contatos.csv"
+NUMERO_TRANSFER = "+5511999999999"
