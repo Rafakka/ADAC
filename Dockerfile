@@ -8,4 +8,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r src/requirements.txt
 COPY adac.py .
 
-CMD [ "python","src/adac.py" ]
+CMD [ "python","main.py" ]

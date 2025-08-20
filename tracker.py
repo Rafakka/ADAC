@@ -7,7 +7,7 @@ def foi_atendido(celular):
         result = subprocess.run(["adb","-s", celular,"shell","dumpsys","telecom"],
                                 capture_output=True, text=True
                                 )
-        if"CallState:OFFHOOK" in results.stdout:
+        if"CallState:OFFHOOK" in result.stdout:
             return True
         time.sleep(1)
         tentativas += 1

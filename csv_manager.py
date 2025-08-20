@@ -1,16 +1,43 @@
 import csv
-from config import CSV_PATH
+from datetime import datetime
+from pathlib import Path
 
-def ler_contatos():
-    with open(CSV_PATH, newline='') as f:
+class CSVManager:
+    def __init__(self, path:str):
+        self.path = Path(path)
+
+def criar_csv_inicial(self,headers=["numero","status","ultima_tentativa"]):
+    if not self.path.exist():
+        with open(self.path,"w",newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(headers)
+
+def ler_contatos(self):
+    if not self.path.exists():
+        return[]
+    
+    with open(self.path, newline="") as f:
         return list(csv.DictReader(f))
 
-def atualizar_status(numero, status):
-    contatos = ler_contatos()
-    for contato in contatos:
-        if contato['numero'] == numero:
-            contato['status'] = status
-            with open(CSV_PATH, 'w', newline='') as f:
-                writer =csv.DictWriter(f, fieldnames=['numero','status'])
-                writer.writeheader()
-                writer.writerows(contatos)
+def registrar_tentativa(self, numero,status:str):
+    timestamp = datetime.now().strftime("%H:%M dia %d/%m/%y")
+    linhas = []
+
+    if self.path.exists():
+        with open(self.path,"r",newline="") as f:
+            reader =csv.DictReader(f)
+            for row in reader:
+                linhas.append(row)
+        encontrado = False
+        for row in linhas:
+            if row["numero"]==numero:
+                row["status"]==status
+                row["ultima_tentativa"]==timestamp
+                encontrado = True
+                
+            if not encontrado:
+                linhas.append({"numero":numero,"status":status,"ultima_tentativa":timestamp})
+                with open(self.path,"w",newline="") as f:
+                    writer = csv.DictWriter(f, fieldnames=["numero","status","ultima_tentativa"])
+                    writer.writeheader()
+                    writer.writerows(linhas)
