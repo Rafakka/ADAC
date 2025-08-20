@@ -1,3 +1,3 @@
-CELULAR = "emulador-5554"
+CELULAR = "DEVICE_ID"
 CSV_PATH = "./dados/contatos.csv"
 NUMERO_TRANSFER = "+5511999999999"

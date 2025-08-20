@@ -1,20 +1,17 @@
 import subprocess
 from tracker import foi_atendido
-from config import CELULAR, NUMERO_TRANSFER
+from csv_manager import CSVManager
+from config import CELULAR, NUMERO_TRANSFER, CSV_PATH
 
-class Caller:
-    def __init__(self, csv_manager):
-        self.csv_manager = csv_manager
+csv_manager = CSVManager(CSV_PATH)
 
-    def discar_e_transferir(self, numero: str):
+def discar_e_transferir(self, numero: str):
 
         print(f"Discando para {numero}...")
         subprocess.run(["adb","-s", CELULAR,"shell","am","start","-a","android.intent.action.CALL","-d",f"tel:{numero}"])
 
         if foi_atendido(CELULAR):
-            print(f"{numero} atendeu, transferido para {NUMERO_TRANSFER}...")
-            subprocess.run(["adb","-s", CELULAR,"shell","am","start","-a","android.intent.action.CALL","-d",f"tel:{NUMERO_TRANSFER}"])
-            self.csv_manager.registrar_tentativa(numero,"Atendido e transferido")
+            subprocess.run(["adb","-s", CELULAR,"shell","input","keyevent","KEYCODE_CALL"])
+            csv_manager.registrar_tentativa(numero,f"Atendido e transferido para{NUMERO_TRANSFER}")
         else:
-            print(f"{numero} não atendeu")
-            self.csv_manager.resgistrar_tentativa(numero,"Não atendido")
+            csv_manager.resgistrar_tentativa(numero,"Não atendido")
