@@ -18,39 +18,69 @@ def executar_comando_adb(comando, device_serial=None):
             return False
         
         return True
-    except subprocess.TimeoutExpired:
-        logging.error("Timeout ao executar comando ADB")
-        return False
     except Exception as e:
         logging.error(f"Exceção ao executar comando ADB: {e}")
         return False
 
 def discar_e_transferir(numero, device_serial=None):
-    """Disca número e transfere chamada"""
+    """Disca número usando CALL intent (funciona no seu Motorola!)"""
     try:
-        # Abrir aplicativo de telefone
-        if not executar_comando_adb(f"shell am start -a android.intent.action.DIAL -d tel:{numero}", device_serial):
+        logging.info(f"📞 Discando para {numero}...")
+        
+        # 1. Usar o comando que FUNCIONA: CALL intent
+        success = executar_comando_adb(
+            f"shell am start -a android.intent.action.CALL -d tel:{numero}", 
+            device_serial
+        )
+        
+        if not success:
+            logging.error("❌ Falha ao iniciar discagem")
             return False
         
-        time.sleep(2)  # Aguardar app abrir
+        # 2. Aguardar discagem completa
+        logging.info(f"⏳ Aguardando {TEMPO_DISCAGEM}s para discagem...")
+        time.sleep(TEMPO_DISCAGEM)
         
-        # Clicar para discar (ajuste conforme seu dispositivo)
-        if not executar_comando_adb("shell input tap 500 1800", device_serial):  # Coordenadas do botão discar
-            return False
+        # 3. Verificar se a chamada está ativa
+        result = subprocess.run([
+            ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
+        ], capture_output=True, text=True, timeout=10)
         
-        time.sleep(TEMPO_DISCAGEM)  # Aguardar discagem
+        if "mCallState=2" not in result.stdout:
+            logging.warning("⚠️ Chamada não está ativa, verificando...")
+            # Tentar verificar novamente
+            time.sleep(3)
+            result = subprocess.run([
+                ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
+            ], capture_output=True, text=True, timeout=10)
+            
+            if "mCallState=2" not in result.stdout:
+                logging.error("❌ Chamada não foi estabelecida")
+                executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
+                return False
         
-        # Transferir chamada (tecla de transferência)
-        if not executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial):
-            return False
+        logging.info("✅ Chamada estabelecida com sucesso!")
         
-        time.sleep(TEMPO_TRANSFERENCIA)  # Aguardar transferência
+        # 4. Transferir chamada
+        logging.info("🔄 Transferindo chamada...")
+        executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
         
-        # Encerrar chamada
+        time.sleep(TEMPO_TRANSFERENCIA)
+        
+        # 5. Encerrar chamada
+        logging.info("📴 Encerrando chamada...")
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
+        time.sleep(2)
         
+        # 6. Voltar para home (funciona no seu Motorola)
+        executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
+        
+        logging.info("🎯 Discagem e transferência concluídas com sucesso!")
         return True
         
     except Exception as e:
-        logging.error(f"Erro no processo de discagem: {e}")
+        logging.error(f"💥 Erro no processo de discagem: {e}")
+        # Limpeza em caso de erro
+        executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
+        executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
         return False

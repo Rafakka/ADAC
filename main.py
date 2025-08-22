@@ -16,6 +16,26 @@ logging.basicConfig(
     ]
 )
 
+def conectar_via_tcpip(ip="192.168.1.100", porta=5555):
+    """Conectar ao dispositivo via TCP/IP"""
+    try:
+        logging.info(f"🔗 Conectando via TCP/IP: {ip}:{porta}")
+        result = subprocess.run([
+            ADB_PATH, "connect", f"{ip}:{porta}"
+        ], capture_output=True, text=True, timeout=30)
+        
+        if "connected" in result.stdout:
+            logging.info(f"✅ Conectado via TCP/IP: {ip}:{porta}")
+            return True
+        else:
+            logging.error(f"❌ Falha na conexão TCP/IP: {result.stderr}")
+            return False
+    except Exception as e:
+        logging.error(f"Erro na conexão TCP/IP: {e}")
+        return False
+
+
+
 def verificar_adb():
     """Verifica se o ADB está funcionando corretamente"""
     try:
