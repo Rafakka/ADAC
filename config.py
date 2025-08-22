@@ -1,3 +1,4 @@
 CELULAR = "DEVICE_ID"
 CSV_PATH = "./dados/contatos.csv"
+ADB_PATH = "./adb"
 NUMERO_TRANSFER = "+5511999999999"
