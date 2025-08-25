@@ -9,9 +9,27 @@ def executar_comando_adb(comando, device_serial=None):
         cmd = [ADB_PATH]
         if device_serial:
             cmd.extend(['-s', device_serial])
-        cmd.extend(comando.split())
         
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        # Se o comando é uma string, split, se já é lista, usar diretamente
+        if isinstance(comando, str):
+            cmd.extend(comando.split())
+        else:
+            cmd.extend(comando)
+        
+        # Configurar environment para evitar popups de console no Windows
+        startupinfo = None
+        if os.name == 'nt':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = 0  # SW_HIDE
+        
+        result = subprocess.run(
+            cmd, 
+            capture_output=True, 
+            text=True, 
+            timeout=30,
+            startupinfo=startupinfo
+        )
         
         if result.returncode != 0:
             logging.error(f"Erro no comando ADB: {result.stderr}")
@@ -23,32 +41,31 @@ def executar_comando_adb(comando, device_serial=None):
         return False
 
 def discar_e_transferir(numero, device_serial=None):
-    """Disca número usando CALL intent (funciona no seu Motorola!)"""
+    """Disca número usando CALL intent"""
     try:
         logging.info(f"📞 Discando para {numero}...")
         
-        # 1. Usar o comando que FUNCIONA: CALL intent
-        success = executar_comando_adb(
-            f"shell am start -a android.intent.action.CALL -d tel:{numero}", 
-            device_serial
-        )
+        # Usar o comando que FUNCIONA: CALL intent
+        success = executar_comando_adb([
+            "shell", "am", "start", "-a", 
+            "android.intent.action.CALL", "-d", f"tel:{numero}"
+        ], device_serial)
         
         if not success:
             logging.error("❌ Falha ao iniciar discagem")
             return False
         
-        # 2. Aguardar discagem completa
+        # Aguardar discagem completa
         logging.info(f"⏳ Aguardando {TEMPO_DISCAGEM}s para discagem...")
         time.sleep(TEMPO_DISCAGEM)
         
-        # 3. Verificar se a chamada está ativa
+        # Verificar se a chamada está ativa
         result = subprocess.run([
             ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
         ], capture_output=True, text=True, timeout=10)
         
         if "mCallState=2" not in result.stdout:
             logging.warning("⚠️ Chamada não está ativa, verificando...")
-            # Tentar verificar novamente
             time.sleep(3)
             result = subprocess.run([
                 ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
@@ -61,18 +78,18 @@ def discar_e_transferir(numero, device_serial=None):
         
         logging.info("✅ Chamada estabelecida com sucesso!")
         
-        # 4. Transferir chamada
+        # Transferir chamada
         logging.info("🔄 Transferindo chamada...")
         executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
         
         time.sleep(TEMPO_TRANSFERENCIA)
         
-        # 5. Encerrar chamada
+        # Encerrar chamada
         logging.info("📴 Encerrando chamada...")
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         time.sleep(2)
         
-        # 6. Voltar para home (funciona no seu Motorola)
+        # Voltar para home
         executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
         
         logging.info("🎯 Discagem e transferência concluídas com sucesso!")
@@ -80,7 +97,6 @@ def discar_e_transferir(numero, device_serial=None):
         
     except Exception as e:
         logging.error(f"💥 Erro no processo de discagem: {e}")
-        # Limpeza em caso de erro
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
         return False
