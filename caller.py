@@ -2,7 +2,7 @@ import subprocess
 import time
 import logging
 import os
-from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA
+from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO
 from csv_manager import CSVManager
 
 def executar_comando_adb(comando, device_serial=None):
@@ -44,6 +44,32 @@ def executar_comando_adb(comando, device_serial=None):
         logging.error(f"Exceção ao executar comando ADB: {e}")
         return False
 
+def transferir_ligacao(device_serial):
+    """Transfere a ligação para o número configurado"""
+    try:
+        logging.info(f"🔄 Transferindo para: {NUMERO_REDIRECIONAMENTO}")
+        
+        # 1. Abrir teclado numérico durante a chamada
+        executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+        time.sleep(1)
+        
+        # 2. Digitar o número de redirecionamento
+        for digit in NUMERO_REDIRECIONAMENTO:
+            executar_comando_adb(f"shell input text {digit}", device_serial)
+            time.sleep(0.1)
+        
+        time.sleep(1)
+        
+        # 3. Confirmar a transferência (tecla de chamada novamente)
+        executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+        
+        logging.info("✅ Transferência realizada")
+        return True
+        
+    except Exception as e:
+        logging.error(f"❌ Erro na transferência: {e}")
+        return False
+
 def verificar_chamada_ativa(device_serial):
     """Verifica se a chamada está ativa e se alguém atendeu"""
     try:
@@ -53,9 +79,7 @@ def verificar_chamada_ativa(device_serial):
         
         output = result.stdout
         
-        # Verificar estado da chamada
         if "mCallState=2" in output:  # Chamada ativa
-            # Verificar se alguém atendeu (estado RINGING -> ACTIVE)
             if "mCallState=1" in output:  # Chamada tocando
                 return "TOCANDO"
             elif "mCallState=2" in output:  # Chamada ativa (alguém atendeu)
@@ -70,10 +94,10 @@ def verificar_chamada_ativa(device_serial):
         return "ERRO"
 
 def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_manager=None):
-    """Disca número e retorna status detalhado"""
+    """Disca número e transfere para o número configurado"""
     try:
-        # Log inicial formatado
         logging.info(f"ADAC - Iniciando discagem: {nome} ({data_nascimento}) - {numero}")
+        logging.info(f"ADAC - Número de redirecionamento: {NUMERO_REDIRECIONAMENTO}")
         
         # Usar CALL intent
         success = executar_comando_adb([
@@ -94,12 +118,11 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
         if status_chamada == "ATENDEU":
             logging.info("ADAC - ✅ Chamada atendida! Transferindo...")
             
-            # Transferir chamada
-            executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+            # Transferir para o número configurado
+            transferir_ligacao(device_serial)
             time.sleep(TEMPO_TRANSFERENCIA)
             
-            # Log de sucesso
-            logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
+            logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, transferido para {NUMERO_REDIRECIONAMENTO}, registro feito por ADAC")
             
             if csv_manager:
                 csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
@@ -112,15 +135,14 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
                 csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
                 
         elif status_chamada == "TOCANDO":
-            # Aguardar mais tempo se estiver tocando
             time.sleep(10)
             status_chamada = verificar_chamada_ativa(device_serial)
             
             if status_chamada == "ATENDEU":
                 logging.info("ADAC - ✅ Chamada atendida após espera! Transferindo...")
-                executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+                transferir_ligacao(device_serial)
                 time.sleep(TEMPO_TRANSFERENCIA)
-                logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
+                logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, transferido para {NUMERO_REDIRECIONAMENTO}, registro feito por ADAC")
                 
                 if csv_manager:
                     csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
@@ -130,7 +152,7 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
                 if csv_manager:
                     csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
         
-        # Encerrar chamada independente do resultado
+        # Encerrar chamada
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         time.sleep(2)
         executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)

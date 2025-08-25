@@ -1,0 +1,11 @@
+# Configurações do ADAC - Auto Discador
+# Formato: chave=valor
+
+# Número para onde as ligações serão transferidas
+numero_redirecionamento=1136529510
+
+# Tempo em segundos para aguardar discagem
+tempo_discagem=10
+
+# Tempo em segundos para aguardar transferência
+tempo_transferencia=10
