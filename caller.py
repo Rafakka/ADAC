@@ -1,11 +1,13 @@
 import subprocess
 import time
 import logging
+import os
 from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA
 
 def executar_comando_adb(comando, device_serial=None):
     """Executa comando ADB com tratamento de erro"""
     try:
+        # Usar o ADB_PATH do config
         cmd = [ADB_PATH]
         if device_serial:
             cmd.extend(['-s', device_serial])
@@ -23,6 +25,8 @@ def executar_comando_adb(comando, device_serial=None):
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             startupinfo.wShowWindow = 0  # SW_HIDE
         
+        logging.debug(f"Executando comando: {' '.join(cmd)}")
+        
         result = subprocess.run(
             cmd, 
             capture_output=True, 
@@ -36,6 +40,10 @@ def executar_comando_adb(comando, device_serial=None):
             return False
         
         return True
+        
+    except subprocess.TimeoutExpired:
+        logging.error("Timeout ao executar comando ADB")
+        return False
     except Exception as e:
         logging.error(f"Exceção ao executar comando ADB: {e}")
         return False
