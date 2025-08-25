@@ -3,29 +3,25 @@ import time
 import logging
 import os
 from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA
+from csv_manager import CSVManager
 
 def executar_comando_adb(comando, device_serial=None):
     """Executa comando ADB com tratamento de erro"""
     try:
-        # Usar o ADB_PATH do config
         cmd = [ADB_PATH]
         if device_serial:
             cmd.extend(['-s', device_serial])
         
-        # Se o comando é uma string, split, se já é lista, usar diretamente
         if isinstance(comando, str):
             cmd.extend(comando.split())
         else:
             cmd.extend(comando)
         
-        # Configurar environment para evitar popups de console no Windows
         startupinfo = None
         if os.name == 'nt':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            startupinfo.wShowWindow = 0  # SW_HIDE
-        
-        logging.debug(f"Executando comando: {' '.join(cmd)}")
+            startupinfo.wShowWindow = 0
         
         result = subprocess.run(
             cmd, 
@@ -48,63 +44,105 @@ def executar_comando_adb(comando, device_serial=None):
         logging.error(f"Exceção ao executar comando ADB: {e}")
         return False
 
-def discar_e_transferir(numero, device_serial=None):
-    """Disca número usando CALL intent"""
+def verificar_chamada_ativa(device_serial):
+    """Verifica se a chamada está ativa e se alguém atendeu"""
     try:
-        logging.info(f"📞 Discando para {numero}...")
+        result = subprocess.run([
+            ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
+        ], capture_output=True, text=True, timeout=10)
         
-        # Usar o comando que FUNCIONA: CALL intent
+        output = result.stdout
+        
+        # Verificar estado da chamada
+        if "mCallState=2" in output:  # Chamada ativa
+            # Verificar se alguém atendeu (estado RINGING -> ACTIVE)
+            if "mCallState=1" in output:  # Chamada tocando
+                return "TOCANDO"
+            elif "mCallState=2" in output:  # Chamada ativa (alguém atendeu)
+                return "ATENDEU"
+        elif "mCallState=0" in output:  # Sem chamada
+            return "NAO_ATENDEU"
+        
+        return "INDEFINIDO"
+        
+    except Exception as e:
+        logging.error(f"Erro ao verificar chamada: {e}")
+        return "ERRO"
+
+def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_manager=None):
+    """Disca número e retorna status detalhado"""
+    try:
+        # Log inicial formatado
+        logging.info(f"ADAC - Iniciando discagem: {nome} ({data_nascimento}) - {numero}")
+        
+        # Usar CALL intent
         success = executar_comando_adb([
             "shell", "am", "start", "-a", 
             "android.intent.action.CALL", "-d", f"tel:{numero}"
         ], device_serial)
         
         if not success:
-            logging.error("❌ Falha ao iniciar discagem")
-            return False
+            logging.error("ADAC - ❌ Falha ao iniciar discagem")
+            if csv_manager:
+                csv_manager.marcar_como_processado(numero, "FALHA_DISCAGEM", nome, data_nascimento)
+            return "FALHA_DISCAGEM"
         
-        # Aguardar discagem completa
-        logging.info(f"⏳ Aguardando {TEMPO_DISCAGEM}s para discagem...")
-        time.sleep(TEMPO_DISCAGEM)
+        # Aguardar e verificar status da chamada
+        time.sleep(3)
+        status_chamada = verificar_chamada_ativa(device_serial)
         
-        # Verificar se a chamada está ativa
-        result = subprocess.run([
-            ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
-        ], capture_output=True, text=True, timeout=10)
-        
-        if "mCallState=2" not in result.stdout:
-            logging.warning("⚠️ Chamada não está ativa, verificando...")
-            time.sleep(3)
-            result = subprocess.run([
-                ADB_PATH, "-s", device_serial, "shell", "dumpsys", "telephony.registry"
-            ], capture_output=True, text=True, timeout=10)
+        if status_chamada == "ATENDEU":
+            logging.info("ADAC - ✅ Chamada atendida! Transferindo...")
             
-            if "mCallState=2" not in result.stdout:
-                logging.error("❌ Chamada não foi estabelecida")
-                executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
-                return False
+            # Transferir chamada
+            executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+            time.sleep(TEMPO_TRANSFERENCIA)
+            
+            # Log de sucesso
+            logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
+            
+            if csv_manager:
+                csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
+            
+        elif status_chamada == "NAO_ATENDEU":
+            logging.info("ADAC - ❌ Chamada não atendida")
+            logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
+            
+            if csv_manager:
+                csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
+                
+        elif status_chamada == "TOCANDO":
+            # Aguardar mais tempo se estiver tocando
+            time.sleep(10)
+            status_chamada = verificar_chamada_ativa(device_serial)
+            
+            if status_chamada == "ATENDEU":
+                logging.info("ADAC - ✅ Chamada atendida após espera! Transferindo...")
+                executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
+                time.sleep(TEMPO_TRANSFERENCIA)
+                logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
+                
+                if csv_manager:
+                    csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
+            else:
+                logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
+                
+                if csv_manager:
+                    csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
         
-        logging.info("✅ Chamada estabelecida com sucesso!")
-        
-        # Transferir chamada
-        logging.info("🔄 Transferindo chamada...")
-        executar_comando_adb("shell input keyevent KEYCODE_CALL", device_serial)
-        
-        time.sleep(TEMPO_TRANSFERENCIA)
-        
-        # Encerrar chamada
-        logging.info("📴 Encerrando chamada...")
+        # Encerrar chamada independente do resultado
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         time.sleep(2)
-        
-        # Voltar para home
         executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
         
-        logging.info("🎯 Discagem e transferência concluídas com sucesso!")
-        return True
+        return status_chamada
         
     except Exception as e:
-        logging.error(f"💥 Erro no processo de discagem: {e}")
+        logging.error(f"ADAC - 💥 Erro no processo: {e}")
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
-        return False
+        
+        if csv_manager:
+            csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
+        
+        return "ERRO"
