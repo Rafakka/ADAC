@@ -2,16 +2,18 @@ import subprocess
 import sys
 import time
 import logging
+import os
 from csv_manager import CSVManager
 from caller import discar_e_transferir
-from config import ADB_PATH
+from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH
 
 # Configuração de logging
+log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(message)s',
     handlers=[
-        logging.FileHandler('adac_log.txt', encoding='utf-8'),
+        logging.FileHandler(log_file, encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -47,8 +49,30 @@ def detectar_dispositivos():
         logging.error(f"Erro ao detectar dispositivos: {e}")
         return None
 
+def encontrar_arquivo_csv():
+    """Encontra automaticamente o arquivo CSV na pasta contatos/"""
+    try:
+        # Verificar se existe o arquivo padrão
+        if os.path.exists(CSV_DEFAULT_PATH):
+            return CSV_DEFAULT_PATH
+        
+        # Procurar por qualquer arquivo CSV na pasta
+        for arquivo in os.listdir(CONTATOS_DIR):
+            if arquivo.lower().endswith('.csv'):
+                return os.path.join(CONTATOS_DIR, arquivo)
+        
+        # Se não encontrou, criar um novo
+        logging.info("Nenhum arquivo CSV encontrado. Criando novo arquivo...")
+        return CSV_DEFAULT_PATH
+        
+    except Exception as e:
+        logging.error(f"Erro ao procurar arquivo CSV: {e}")
+        return CSV_DEFAULT_PATH
+
 def main():
     logging.info("=== ADAC - Auto Discador iniciado ===")
+    logging.info(f"📁 Pasta de contatos: {CONTATOS_DIR}")
+    logging.info(f"📁 Pasta de logs: {LOGS_DIR}")
     
     # Verificar ADB
     if not verificar_adb():
@@ -64,11 +88,9 @@ def main():
     CELULAR = devices[0]
     logging.info(f"Usando celular: {CELULAR}")
 
-    # Obter caminho do CSV
-    if len(sys.argv) < 2:
-        csv_path = input("Digite o caminho do CSV: ").strip()
-    else:
-        csv_path = sys.argv[1].strip()
+    # Encontrar arquivo CSV automaticamente
+    csv_path = encontrar_arquivo_csv()
+    logging.info(f"📋 Usando arquivo CSV: {csv_path}")
 
     # Inicializar gerenciador CSV
     try:
@@ -79,7 +101,7 @@ def main():
         logging.info(f"Encontrados {len(contatos)} contatos para discar")
 
         if not contatos:
-            logging.info("Nenhum contato para processar.")
+            logging.info("Nenhum contato para processar. Adicione números no CSV.")
             sys.exit(0)
 
         # Processar cada contato
@@ -114,6 +136,7 @@ def main():
                 continue
 
         logging.info("=== ADAC - Processamento concluído ===")
+        logging.info(f"📄 Log salvo em: {log_file}")
 
     except Exception as e:
         logging.error(f"Erro no processamento: {e}")

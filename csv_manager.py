@@ -1,13 +1,16 @@
 import csv
 import os
 from datetime import datetime
+from config import CONTATOS_DIR, CSV_DEFAULT_PATH
 
 class CSVManager:
-    def __init__(self, args):
-        if len(args) > 1:
+    def __init__(self, args=None):
+        # Usar o caminho padrão da pasta contatos/
+        self.csv_path = CSV_DEFAULT_PATH
+        
+        # Se foi passado um caminho específico, usar ele
+        if args and len(args) > 1:
             self.csv_path = args[1]
-        else:
-            self.csv_path = input("Digite o caminho do CSV: ").strip()
         
         # Garantir que o diretório existe
         os.makedirs(os.path.dirname(self.csv_path), exist_ok=True)
