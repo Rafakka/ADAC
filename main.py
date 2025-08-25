@@ -18,6 +18,12 @@ logging.basicConfig(
     ]
 )
 
+try:
+    from gui_manager import ADACGUI
+    GUI_AVAILABLE = True
+except ImportError:
+    GUI_AVAILABLE = False
+
 def verificar_adb():
     """Verifica se o ADB está funcionando"""
     try:
@@ -70,77 +76,86 @@ def encontrar_arquivo_csv():
         return CSV_DEFAULT_PATH
 
 def main():
-    logging.info("=== ADAC - Auto Discador iniciado ===")
-    logging.info(f"📁 Pasta de contatos: {CONTATOS_DIR}")
-    logging.info(f"📁 Pasta de logs: {LOGS_DIR}")
+
+    use_gui = False
+    if GUI_AVAILABLE and "--gui" in sys.argv:
+        use_gui = True
+
+    if use_gui:
+        gui = ADACGUI()
+        gui.log_message("Iniciando ADAC com interface gráfica", "success")
+    else:
+        logging.info("=== ADAC - Auto Discador iniciado ===")
+        logging.info(f"📁 Pasta de contatos: {CONTATOS_DIR}")
+        logging.info(f"📁 Pasta de logs: {LOGS_DIR}")
     
-    # Verificar ADB
-    if not verificar_adb():
-        logging.error("ADB não disponível.")
-        sys.exit(1)
-    
-    # Detectar dispositivos
-    devices = detectar_dispositivos()
-    if not devices:
-        logging.error("Nenhum celular detectado.")
-        sys.exit(1)
-
-    CELULAR = devices[0]
-    logging.info(f"Usando celular: {CELULAR}")
-
-    # Encontrar arquivo CSV automaticamente
-    csv_path = encontrar_arquivo_csv()
-    logging.info(f"📋 Usando arquivo CSV: {csv_path}")
-
-    # Inicializar gerenciador CSV
-    try:
-        csv_manager = CSVManager([csv_path])
-        csv_manager.criar_csv_inicial()
+        # Verificar ADB
+        if not verificar_adb():
+            logging.error("ADB não disponível.")
+            sys.exit(1)
         
-        contatos = csv_manager.ler_contatos()
-        logging.info(f"Encontrados {len(contatos)} contatos para discar")
+        # Detectar dispositivos
+        devices = detectar_dispositivos()
+        if not devices:
+            logging.error("Nenhum celular detectado.")
+            sys.exit(1)
 
-        if not contatos:
-            logging.info("Nenhum contato para processar. Adicione números no CSV.")
-            sys.exit(0)
+        CELULAR = devices[0]
+        logging.info(f"Usando celular: {CELULAR}")
 
-        # Processar cada contato
-        for i, contato in enumerate(contatos, 1):
-            numero = contato["numero"]
-            nome = contato.get("nome", "Não informado")
-            data_nascimento = contato.get("data_nascimento", "Não informada")
+        # Encontrar arquivo CSV automaticamente
+        csv_path = encontrar_arquivo_csv()
+        logging.info(f"📋 Usando arquivo CSV: {csv_path}")
+
+        # Inicializar gerenciador CSV
+        try:
+            csv_manager = CSVManager([csv_path])
+            csv_manager.criar_csv_inicial()
             
-            logging.info(f"[{i}/{len(contatos)}] Processando: {nome}")
-            
-            try:
-                resultado = discar_e_transferir(
-                    numero, 
-                    nome, 
-                    data_nascimento, 
-                    CELULAR, 
-                    csv_manager
-                )
-                
-                # Log final baseado no resultado
-                if resultado == "ATENDEU":
-                    logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
-                elif resultado == "NAO_ATENDEU":
-                    logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
-                
-                # Pausa entre chamadas
-                time.sleep(3)
-                
-            except Exception as e:
-                logging.error(f"Erro ao processar {numero}: {e}")
-                csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
-                continue
+            contatos = csv_manager.ler_contatos()
+            logging.info(f"Encontrados {len(contatos)} contatos para discar")
 
-        logging.info("=== ADAC - Processamento concluído ===")
-        logging.info(f"📄 Log salvo em: {log_file}")
+            if not contatos:
+                logging.info("Nenhum contato para processar. Adicione números no CSV.")
+                sys.exit(0)
 
-    except Exception as e:
-        logging.error(f"Erro no processamento: {e}")
-        sys.exit(1)
+            # Processar cada contato
+            for i, contato in enumerate(contatos, 1):
+                numero = contato["numero"]
+                nome = contato.get("nome", "Não informado")
+                data_nascimento = contato.get("data_nascimento", "Não informada")
+                
+                logging.info(f"[{i}/{len(contatos)}] Processando: {nome}")
+                
+                try:
+                    resultado = discar_e_transferir(
+                        numero, 
+                        nome, 
+                        data_nascimento, 
+                        CELULAR, 
+                        csv_manager
+                    )
+                    
+                    # Log final baseado no resultado
+                    if resultado == "ATENDEU":
+                        logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC")
+                    elif resultado == "NAO_ATENDEU":
+                        logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
+                    
+                    # Pausa entre chamadas
+                    time.sleep(3)
+                    
+                except Exception as e:
+                    logging.error(f"Erro ao processar {numero}: {e}")
+                    csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
+                    continue
+
+            logging.info("=== ADAC - Processamento concluído ===")
+            logging.info(f"📄 Log salvo em: {log_file}")
+
+        except Exception as e:
+            logging.error(f"Erro no processamento: {e}")
+            sys.exit(1)
 
 if __name__ == "__main__":
     main()
