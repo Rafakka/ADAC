@@ -2,7 +2,7 @@
 
 # Script para executar localmente (fora do Docker)
 
-echo "🚀 Iniciando Auto Discador Localmente"
+echo "🚀 Iniciando ADAC Localmente"
 
 # Verificar se ADB está instalado
 if ! command -v adb &> /dev/null; then
