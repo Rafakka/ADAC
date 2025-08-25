@@ -1,0 +1,31 @@
+# ADAC - Auto Discador para Windows
+
+## 📋 Pré-requisitos
+- Windows 10 ou 11
+- Python 3.9+ (será instalado automaticamente)
+- Celular Android com depuração USB ativada
+
+## 🚀 Como Usar
+
+1. **Conecte o celular** via USB
+2. **Ative depuração USB** (Opções do Desenvolvedor)
+3. **Autorize** o computador no popup do celular
+4. **Execute** `run.bat`
+
+## 🔧 Solução de Problemas
+
+### ❌ Dispositivo não detectado
+- Execute `install_drivers.bat` como Administrador
+- Reconecte o cabo USB
+
+### ❌ Erro de Python
+- Execute `instalador_windows.bat`
+
+### ❌ Permissões insuficientes
+- Execute o Prompt de Comando como Administrador
+
+## 📞 Suporte
+Para problemas, verifique se:
+- Depuração USB está ativa
+- Celular está autorizado
+- Drivers ADB estão instalados
