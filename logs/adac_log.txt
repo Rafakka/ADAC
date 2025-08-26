@@ -102,3 +102,54 @@
 2025-08-26 15:50:32,190 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
 2025-08-26 15:50:32,193 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-08-26 15:50:32,207 - Nenhum celular detectado.
+2025-08-26 15:57:41,371 - Interface gráfica inicializada
+2025-08-26 15:57:41,371 - === ADAC - Auto Discador iniciado ===
+2025-08-26 15:57:41,371 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 15:57:41,371 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 15:57:41,374 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 15:57:41,378 - Nenhum celular detectado.
+2025-08-26 15:57:50,523 - Interface gráfica inicializada
+2025-08-26 15:57:50,523 - === ADAC - Auto Discador iniciado ===
+2025-08-26 15:57:50,523 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 15:57:50,523 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 15:57:50,527 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 15:57:50,530 - Nenhum celular detectado.
+2025-08-26 16:00:15,590 - Erro ao inicializar GUI: cannot access local variable 'time' where it is not associated with a value
+2025-08-26 16:00:15,593 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:00:15,593 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:00:15,593 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:00:15,597 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:00:15,609 - Nenhum celular detectado.
+2025-08-26 16:06:46,516 - Erro ao inicializar GUI: cannot access local variable 'time' where it is not associated with a value
+2025-08-26 16:06:46,530 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:06:46,530 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:06:46,530 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:06:46,536 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:06:46,543 - Nenhum celular detectado.
+2025-08-26 16:10:13,138 - Erro ao inicializar GUI: cannot access local variable 'time' where it is not associated with a value
+2025-08-26 16:10:13,141 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:10:13,142 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:10:13,142 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:10:13,155 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:10:13,169 - Nenhum celular detectado.
+2025-08-26 16:22:12,513 - Interface gráfica inicializada
+2025-08-26 16:22:12,519 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:22:12,519 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:22:12,520 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:22:12,542 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:22:12,554 - Nenhum celular detectado.
+2025-08-26 16:22:12,554 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:22:24,207 - Interface gráfica inicializada
+2025-08-26 16:22:24,207 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:22:24,207 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:22:24,207 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:22:24,212 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:22:24,218 - Nenhum celular detectado.
+2025-08-26 16:22:24,219 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:29:43,192 - Interface gráfica inicializada
+2025-08-26 16:29:43,193 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:29:43,193 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:29:43,193 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:29:43,196 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:29:43,201 - Nenhum celular detectado.
+2025-08-26 16:29:43,201 - Processamento concluído. Pressione ESC para fechar.

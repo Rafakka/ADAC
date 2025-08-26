@@ -1,9 +1,10 @@
 import subprocess
 import sys
 import threading
-import time
+import time as time_module  # Renomear para evitar conflito
 import logging
 import os
+import pygame
 from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
@@ -31,11 +32,10 @@ logging.basicConfig(
 
 def log_combined(message, level="info"):
     """Log para ambos GUI e console"""
-    global GUI_AVAILABLE  # Declarar como global
+    global GUI_AVAILABLE
     if GUI_AVAILABLE:
         log_message(message, level)
     
-    # Log tradicional
     if level == "error":
         logging.error(message)
     elif level == "warning":
@@ -77,16 +77,13 @@ def detectar_dispositivos():
 def encontrar_arquivo_csv():
     """Encontra automaticamente o arquivo CSV na pasta contatos/"""
     try:
-        # Verificar se existe o arquivo padrão
         if os.path.exists(CSV_DEFAULT_PATH):
             return CSV_DEFAULT_PATH
         
-        # Procurar por qualquer arquivo CSV na pasta
         for arquivo in os.listdir(CONTATOS_DIR):
             if arquivo.lower().endswith('.csv'):
                 return os.path.join(CONTATOS_DIR, arquivo)
         
-        # Se não encontrou, criar um novo
         log_combined("Nenhum arquivo CSV encontrado. Criando novo arquivo...", "warning")
         return CSV_DEFAULT_PATH
         
@@ -95,7 +92,7 @@ def encontrar_arquivo_csv():
         return CSV_DEFAULT_PATH
 
 def main():
-    global GUI_AVAILABLE  # Declarar como global para poder modificar
+    global GUI_AVAILABLE
     
     # Inicializar GUI se disponível
     gui = None
@@ -108,11 +105,11 @@ def main():
                 gui_thread = threading.Thread(target=gui.run)
                 gui_thread.daemon = True
                 gui_thread.start()
-                time.sleep(1)  # Dar tempo para GUI inicializar
+                time_module.sleep(1)  # Usar time_module em vez de time
                 log_combined("Interface gráfica inicializada", "success")
         except Exception as e:
             log_combined(f"Erro ao inicializar GUI: {e}", "error")
-            GUI_AVAILABLE = False  # Atualizar a variável global
+            GUI_AVAILABLE = False
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
@@ -122,14 +119,12 @@ def main():
         if GUI_AVAILABLE and gui:
             update_gui_status(status="Inicializando...")
 
-        # Verificar ADB
         if not verificar_adb():
             log_combined("ADB não disponível.", "error")
             if GUI_AVAILABLE:
                 update_gui_status(status="Erro - ADB não disponível")
             sys.exit(1)
 
-        # Detectar dispositivos
         devices = detectar_dispositivos()
         if not devices:
             log_combined("Nenhum celular detectado.", "error")
@@ -143,14 +138,12 @@ def main():
         if GUI_AVAILABLE:
             update_gui_status(device=f"Conectado: {CELULAR}")
 
-        # Encontrar arquivo CSV
         csv_path = encontrar_arquivo_csv()
         log_combined(f"📋 Usando arquivo CSV: {csv_path}")
         
         if GUI_AVAILABLE:
             update_gui_status(csv=f"Carregado: {os.path.basename(csv_path)}")
 
-        # Inicializar gerenciador CSV
         csv_manager = CSVManager([csv_path])
         csv_manager.criar_csv_inicial()
         
@@ -168,15 +161,13 @@ def main():
             log_combined("Nenhum contato para processar. Adicione números no CSV.", "warning")
             sys.exit(0)
 
-        # Processar cada contato
         sucesso_count = 0
         falha_count = 0
         
         for i, contato in enumerate(contatos, 1):
-            # Verificar se deve pausar ou parar
             if GUI_AVAILABLE:
                 while is_gui_paused() and not should_stop():
-                    time.sleep(0.5)
+                    time_module.sleep(0.5)  # Usar time_module
                 
                 if should_stop():
                     log_combined("Execução interrompida pelo usuário", "warning")
@@ -206,7 +197,6 @@ def main():
                     csv_manager
                 )
                 
-                # Atualizar contadores
                 if resultado == "ATENDEU":
                     sucesso_count += 1
                     log_combined(f"✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC", "success")
@@ -214,7 +204,6 @@ def main():
                     falha_count += 1
                     log_combined(f"❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC", "warning")
                 
-                # Atualizar GUI
                 if GUI_AVAILABLE:
                     update_gui_status(
                         processados=i,
@@ -222,8 +211,7 @@ def main():
                         falha=falha_count
                     )
                 
-                # Pausa entre chamadas
-                time.sleep(3)
+                time_module.sleep(3)  # Usar time_module
                 
             except Exception as e:
                 falha_count += 1
@@ -237,7 +225,6 @@ def main():
                     )
                 continue
 
- # Relatório final
         log_combined(f"=== ADAC - Processamento concluído ===", "success")
         log_combined(f"📊 Total: {total_contatos} contatos", "success")
         log_combined(f"✅ Sucesso: {sucesso_count}", "success")
@@ -253,7 +240,6 @@ def main():
                 current="Aguardando para fechar"
             )
             
-            # Manter a GUI aberta até pressionar ESC
             log_combined("Processamento concluído. Pressione ESC para fechar.", "success")
 
     except KeyboardInterrupt:
@@ -267,17 +253,30 @@ def main():
     finally:
         # Se GUI está ativa, aguardar ESC para fechar
         if GUI_AVAILABLE and gui:
-            try:
-                # Chamar método para aguardar ESC
-                if hasattr(gui, 'wait_for_escape'):
-                    gui.wait_for_escape()
-                else:
-                    # Fallback: esperar alguns segundos
-                    time.sleep(5)
-            except Exception as e:
-                log_combined(f"Erro ao aguardar fechamento: {e}", "error")
+            log_combined("Processamento concluído. Pressione ESC para fechar.", "success")
             
-            # Finalizar GUI
+            try:
+                # Loop simples para aguardar ESC
+                waiting = True
+                clock = pygame.time.Clock()
+                
+                while waiting and gui.running:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                            waiting = False
+                            gui.running = False
+                    
+                    # Manter a interface atualizada
+                    if hasattr(gui, 'draw_interface'):
+                        gui.draw_interface()
+                    clock.tick(30)
+                    
+            except Exception as e:
+                log_combined(f"Erro: {e}", "error")
+                # Usar time_module em vez de time
+                time_module.sleep(3)
+            
+            # Finalizar
             gui.running = False
             if gui_thread and gui_thread.is_alive():
                 gui_thread.join(timeout=2.0)
