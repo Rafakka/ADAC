@@ -275,7 +275,39 @@ class ADACGUI:
             # Atualizar display
             self.draw_interface()
             clock.tick(30)
-            
+
+    def wait_for_escape_safe(self):
+        """Aguarda ESC de forma segura, evitando erros X11"""
+        self.add_line("═" * 60, 'border')
+        self.add_line("🎯 PROCESSAMENTO CONCLUÍDO", 'success')
+        self.add_line("💡 Pressione ESC para fechar", 'header')
+        self.add_line("═" * 60, 'border')
+        
+        clock = pygame.time.Clock()
+        waiting = True
+        
+        while waiting and self.running:
+            try:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        waiting = False
+                        self.running = False
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            waiting = False
+                            self.running = False
+                
+                self.draw_interface()
+                clock.tick(30)
+                
+            except pygame.error as e:
+                if "X Error" in str(e) or "MIT-SHM" in str(e):
+                    # Ignorar erro e continuar
+                    continue
+                else:
+                    # Outro erro, parar
+                    waiting = False
+                    break        
 # Instância global para acesso fácil
 gui_instance = None
 

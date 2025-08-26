@@ -153,3 +153,49 @@
 2025-08-26 16:29:43,196 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-08-26 16:29:43,201 - Nenhum celular detectado.
 2025-08-26 16:29:43,201 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:43:04,223 - Interface gráfica inicializada
+2025-08-26 16:43:04,224 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:43:04,224 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:43:04,224 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:43:04,227 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:43:04,231 - Nenhum celular detectado.
+2025-08-26 16:43:04,231 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:43:14,578 - Interface gráfica inicializada
+2025-08-26 16:43:14,578 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:43:14,578 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:43:14,578 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:43:14,583 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:43:14,587 - Nenhum celular detectado.
+2025-08-26 16:43:14,587 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:43:30,216 - Interface gráfica inicializada
+2025-08-26 16:43:30,216 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:43:30,216 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:43:30,216 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:43:30,220 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:43:30,233 - Nenhum celular detectado.
+2025-08-26 16:43:30,233 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:44:06,391 - Interface gráfica inicializada
+2025-08-26 16:44:06,391 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:44:06,391 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:44:06,391 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:44:06,397 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:44:06,401 - Nenhum celular detectado.
+2025-08-26 16:44:06,401 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:46:12,885 - Interface gráfica inicializada
+2025-08-26 16:46:12,885 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:46:12,885 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:46:12,885 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:46:12,888 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:46:12,891 - Nenhum celular detectado.
+2025-08-26 16:46:23,129 - Interface gráfica inicializada
+2025-08-26 16:46:23,130 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:46:23,130 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:46:23,130 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:46:23,136 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:46:23,143 - Nenhum celular detectado.
+2025-08-26 16:47:17,865 - Interface gráfica inicializada
+2025-08-26 16:47:17,865 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:47:17,865 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:47:17,865 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:47:17,868 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:47:17,873 - Nenhum celular detectado.

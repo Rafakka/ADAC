@@ -5,6 +5,10 @@ import time as time_module  # Renomear para evitar conflito
 import logging
 import os
 import pygame
+
+os.environ['SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR'] = '0'
+os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
+
 from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
@@ -251,35 +255,24 @@ def main():
         if GUI_AVAILABLE and gui:
             update_gui_status(status=f"Erro fatal: {str(e)}")
     finally:
-        # Se GUI está ativa, aguardar ESC para fechar
         if GUI_AVAILABLE and gui:
-            log_combined("Processamento concluído. Pressione ESC para fechar.", "success")
-            
             try:
-                # Loop simples para aguardar ESC
-                waiting = True
-                clock = pygame.time.Clock()
-                
-                while waiting and gui.running:
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                            waiting = False
-                            gui.running = False
-                    
-                    # Manter a interface atualizada
-                    if hasattr(gui, 'draw_interface'):
-                        gui.draw_interface()
-                    clock.tick(30)
-                    
+                if hasattr(gui, 'wait_for_escape_safe'):
+                    gui.wait_for_escape_safe()
+                else:
+                    # Fallback
+                    time_module.sleep(5)
             except Exception as e:
                 log_combined(f"Erro: {e}", "error")
-                # Usar time_module em vez de time
-                time_module.sleep(3)
             
-            # Finalizar
+            # Fechamento garantido
             gui.running = False
+            try:
+                pygame.quit()
+            except:
+                pass
+                
             if gui_thread and gui_thread.is_alive():
-                gui_thread.join(timeout=2.0)
-
+                gui_thread.join(timeout=1.0)
 if __name__ == "__main__":
     main()
