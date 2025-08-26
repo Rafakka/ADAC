@@ -3,6 +3,8 @@ import sys
 import platform
 import logging
 
+GUI_ENABLED = True
+
 # Determinar caminho base
 if getattr(sys, 'frozen', False):
     BASE_DIR = os.path.dirname(sys.executable)
