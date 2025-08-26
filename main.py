@@ -8,7 +8,8 @@ from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
 
-# Configuração de GUI
+# Configuração de GUI - usar variável global
+GUI_AVAILABLE = False
 if GUI_ENABLED:
     try:
         from gui_integrada import init_gui, log_message, update_gui_status, is_gui_paused, should_stop
@@ -16,8 +17,6 @@ if GUI_ENABLED:
     except ImportError as e:
         print(f"GUI não disponível: {e}")
         GUI_AVAILABLE = False
-else:
-    GUI_AVAILABLE = False
 
 # Configuração de logging tradicional
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
@@ -32,6 +31,7 @@ logging.basicConfig(
 
 def log_combined(message, level="info"):
     """Log para ambos GUI e console"""
+    global GUI_AVAILABLE  # Declarar como global
     if GUI_AVAILABLE:
         log_message(message, level)
     
@@ -95,6 +95,8 @@ def encontrar_arquivo_csv():
         return CSV_DEFAULT_PATH
 
 def main():
+    global GUI_AVAILABLE  # Declarar como global para poder modificar
+    
     # Inicializar GUI se disponível
     gui = None
     gui_thread = None
@@ -110,7 +112,7 @@ def main():
                 log_combined("Interface gráfica inicializada", "success")
         except Exception as e:
             log_combined(f"Erro ao inicializar GUI: {e}", "error")
-            GUI_AVAILABLE = False
+            GUI_AVAILABLE = False  # Atualizar a variável global
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
@@ -235,7 +237,7 @@ def main():
                     )
                 continue
 
-        # Relatório final
+ # Relatório final
         log_combined(f"=== ADAC - Processamento concluído ===", "success")
         log_combined(f"📊 Total: {total_contatos} contatos", "success")
         log_combined(f"✅ Sucesso: {sucesso_count}", "success")
@@ -244,12 +246,15 @@ def main():
         
         if GUI_AVAILABLE:
             update_gui_status(
-                status="Concluído",
+                status="Concluído - Pressione ESC",
                 processados=total_contatos,
                 sucesso=sucesso_count,
                 falha=falha_count,
-                current="Processamento finalizado"
+                current="Aguardando para fechar"
             )
+            
+            # Manter a GUI aberta até pressionar ESC
+            log_combined("Processamento concluído. Pressione ESC para fechar.", "success")
 
     except KeyboardInterrupt:
         log_combined("Execução interrompida pelo usuário", "warning")
@@ -260,8 +265,19 @@ def main():
         if GUI_AVAILABLE and gui:
             update_gui_status(status=f"Erro fatal: {str(e)}")
     finally:
-        # Garantir que a GUI seja fechada corretamente
+        # Se GUI está ativa, aguardar ESC para fechar
         if GUI_AVAILABLE and gui:
+            try:
+                # Chamar método para aguardar ESC
+                if hasattr(gui, 'wait_for_escape'):
+                    gui.wait_for_escape()
+                else:
+                    # Fallback: esperar alguns segundos
+                    time.sleep(5)
+            except Exception as e:
+                log_combined(f"Erro ao aguardar fechamento: {e}", "error")
+            
+            # Finalizar GUI
             gui.running = False
             if gui_thread and gui_thread.is_alive():
                 gui_thread.join(timeout=2.0)

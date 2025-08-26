@@ -251,6 +251,30 @@ class ADACGUI:
         pygame.quit()
         return True
 
+    def wait_for_escape(self):
+        """Aguarda o usuário pressionar ESC para fechar"""
+        self.add_line("")
+        self.add_line("═" * 90, 'border')
+        self.add_line("🎯 Processamento concluído!", 'success')
+        self.add_line("💡 Pressione ESC para fechar a janela", 'header')
+        self.add_line("═" * 90, 'border')
+        
+        waiting = True
+        clock = pygame.time.Clock()
+        
+        while waiting and self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+                    self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        waiting = False
+                        self.running = False
+            
+            self.draw_interface()
+            clock.tick(30)
+
 # Instância global para acesso fácil
 gui_instance = None
 
