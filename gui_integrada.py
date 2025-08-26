@@ -3,8 +3,6 @@ import sys
 import os
 from datetime import datetime
 import time
-import threading
-from config import CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH
 
 class ADACGUI:
     def __init__(self):
@@ -48,7 +46,6 @@ class ADACGUI:
         # Controles
         self.running = True
         self.paused = False
-        self.stopped = False
         
         self.init_display()
     
@@ -62,28 +59,35 @@ class ADACGUI:
         self.add_line("═" * 90, 'border')
         self.add_line("")
     
-    def add_line(self, text, level="info"):
-        """Adiciona uma linha ao buffer - versão simplificada"""
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        
+    def add_line(self, text, color_name=None, level="info"):
+        """Adiciona uma linha ao buffer com formatação"""
+        # Determinar cor baseada no nível ou nome da cor
         if level == "error":
+            color_val = self.colors['error']
+            timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] ❌ {text}"
-            color = self.colors['error']
         elif level == "warning":
+            color_val = self.colors['warning']
+            timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] ⚠️  {text}"
-            color = self.colors['warning']
         elif level == "success":
+            color_val = self.colors['success']
+            timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] ✅ {text}"
-            color = self.colors['success']
         else:
+            # Usar cor pelo nome ou padrão
+            if color_name and color_name in self.colors:
+                color_val = self.colors[color_name]
+            else:
+                color_val = self.colors['text']
+            
+            timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] 🔹 {text}"
-            color = self.colors['text']
         
-        self.lines.append((formatted_text, color))
+        self.lines.append((formatted_text, color_val))
         if len(self.lines) > self.max_lines:
             self.lines = self.lines[-self.max_lines:]
     
-
     def update_status(self, status=None, device=None, csv=None, 
                      total=None, processados=None, sucesso=None, falha=None,
                      current=None):
@@ -139,8 +143,9 @@ class ADACGUI:
         
         if self.contatos_total > 0:
             progresso = (self.contatos_processados / self.contatos_total) * 100
-            pygame.draw.rect(self.screen, self.colors['panel'], ( (self.width - 50) // 2 + 50, 240, (self.width - 150) // 2, 20), 0, 10)
-            pygame.draw.rect(self.screen, self.colors['success'], ( (self.width - 50) // 2 + 50, 240, ((self.width - 150) // 2) * (progresso / 100), 20), 0, 10)
+            bar_width = ((self.width - 150) // 2) * (progresso / 100)
+            pygame.draw.rect(self.screen, self.colors['panel'], ((self.width - 50) // 2 + 50, 240, (self.width - 150) // 2, 20), 0, 10)
+            pygame.draw.rect(self.screen, self.colors['success'], ((self.width - 50) // 2 + 50, 240, bar_width, 20), 0, 10)
             
             progress_text = f"{progresso:.1f}% ({self.contatos_processados}/{self.contatos_total})"
             text_surf = self.font.render(progress_text, True, self.colors['text'])
@@ -202,34 +207,32 @@ class ADACGUI:
         
         for line in help_lines:
             self.add_line(line, 'header')
-
-def handle_events(self):
-    """Processa eventos da interface"""
-    try:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-                return False
-            
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+    
+    def handle_events(self):
+        """Processa eventos da interface"""
+        try:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     self.running = False
                     return False
                 
-                elif event.key == pygame.K_F1:
-                    self.show_help()
-                
-                elif event.key == pygame.K_SPACE:
-                    self.paused = not self.paused
-                    status = "PAUSADO" if self.paused else "EXECUTANDO"
-                    self.add_line(f"Discagem {status}", "warning" if self.paused else "success")
-        
-        return True
-    except pygame.error as e:
-        if "not initialized" in str(e):
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        return False
+                    
+                    elif event.key == pygame.K_F1:
+                        self.show_help()
+                    
+                    elif event.key == pygame.K_SPACE:
+                        self.paused = not self.paused
+                        status = "PAUSADO" if self.paused else "EXECUTANDO"
+                        self.add_line(f"Discagem {status}", "warning" if self.paused else "success")
+            
+            return True
+        except pygame.error:
             self.running = False
             return False
-        raise
     
     def run(self):
         """Loop principal da interface"""
@@ -246,7 +249,7 @@ def handle_events(self):
             clock.tick(30)
         
         pygame.quit()
-        return not self.stopped
+        return True
 
 # Instância global para acesso fácil
 gui_instance = None
@@ -266,8 +269,6 @@ def log_message(message, level="info"):
     global gui_instance
     if gui_instance:
         gui_instance.add_line(message, level=level)
-    else:
-        print(f"[{level.upper()}] {message}")
 
 def update_gui_status(**kwargs):
     """Atualiza status na GUI"""

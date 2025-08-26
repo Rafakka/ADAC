@@ -100,13 +100,17 @@ def main():
     gui_thread = None
     
     if GUI_AVAILABLE:
-        gui = init_gui()
-        if gui:
-            # Executar GUI em thread separada
-            gui_thread = threading.Thread(target=gui.run)
-            gui_thread.daemon = True
-            gui_thread.start()
-            time.sleep(1)  # Dar tempo para GUI inicializar
+        try:
+            gui = init_gui()
+            if gui:
+                gui_thread = threading.Thread(target=gui.run)
+                gui_thread.daemon = True
+                gui_thread.start()
+                time.sleep(1)  # Dar tempo para GUI inicializar
+                log_combined("Interface gráfica inicializada", "success")
+        except Exception as e:
+            log_combined(f"Erro ao inicializar GUI: {e}", "error")
+            GUI_AVAILABLE = False
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
