@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import threading
 import time
 import logging
 import os
@@ -7,6 +8,7 @@ from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
 
+# Configuração de GUI
 if GUI_ENABLED:
     try:
         from gui_integrada import init_gui, log_message, update_gui_status, is_gui_paused, should_stop
@@ -16,7 +18,6 @@ if GUI_ENABLED:
         GUI_AVAILABLE = False
 else:
     GUI_AVAILABLE = False
-
 
 # Configuração de logging tradicional
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
@@ -42,23 +43,17 @@ def log_combined(message, level="info"):
     else:
         logging.info(message)
 
-try:
-    from gui_manager import ADACGUI
-    GUI_AVAILABLE = True
-except ImportError:
-    GUI_AVAILABLE = False
-
 def verificar_adb():
     """Verifica se o ADB está funcionando"""
     try:
         result = subprocess.run([ADB_PATH, "version"], capture_output=True, text=True, timeout=10)
         if result.returncode != 0:
-            logging.error("ADB não está funcionando corretamente")
+            log_combined("ADB não está funcionando corretamente", "error")
             return False
-        logging.info(f"ADB encontrado: {result.stdout.splitlines()[0]}")
+        log_combined(f"ADB encontrado: {result.stdout.splitlines()[0]}", "success")
         return True
     except Exception as e:
-        logging.error(f"Erro ao verificar ADB: {e}")
+        log_combined(f"Erro ao verificar ADB: {e}", "error")
         return False
 
 def detectar_dispositivos():
@@ -71,12 +66,12 @@ def detectar_dispositivos():
             if "device usb:" in line:
                 device_id = line.split()[0]
                 devices.append(device_id)
-                logging.info(f"Dispositivo detectado: {line}")
+                log_combined(f"Dispositivo detectado: {line}", "success")
         
         return devices if devices else None
         
     except Exception as e:
-        logging.error(f"Erro ao detectar dispositivos: {e}")
+        log_combined(f"Erro ao detectar dispositivos: {e}", "error")
         return None
 
 def encontrar_arquivo_csv():
@@ -92,25 +87,26 @@ def encontrar_arquivo_csv():
                 return os.path.join(CONTATOS_DIR, arquivo)
         
         # Se não encontrou, criar um novo
-        logging.info("Nenhum arquivo CSV encontrado. Criando novo arquivo...")
+        log_combined("Nenhum arquivo CSV encontrado. Criando novo arquivo...", "warning")
         return CSV_DEFAULT_PATH
         
     except Exception as e:
-        logging.error(f"Erro ao procurar arquivo CSV: {e}")
+        log_combined(f"Erro ao procurar arquivo CSV: {e}", "error")
         return CSV_DEFAULT_PATH
 
 def main():
     # Inicializar GUI se disponível
     gui = None
+    gui_thread = None
+    
     if GUI_AVAILABLE:
         gui = init_gui()
         if gui:
             # Executar GUI em thread separada
-            import threading
             gui_thread = threading.Thread(target=gui.run)
             gui_thread.daemon = True
             gui_thread.start()
-            time.sleep(0.5)  # Dar tempo para GUI inicializar
+            time.sleep(1)  # Dar tempo para GUI inicializar
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
@@ -149,128 +145,122 @@ def main():
             update_gui_status(csv=f"Carregado: {os.path.basename(csv_path)}")
 
         # Inicializar gerenciador CSV
-        try:
-            csv_manager = CSVManager([csv_path])
-            csv_manager.criar_csv_inicial()
+        csv_manager = CSVManager([csv_path])
+        csv_manager.criar_csv_inicial()
+        
+        contatos = csv_manager.ler_contatos()
+        total_contatos = len(contatos)
+        log_combined(f"Encontrados {total_contatos} contatos para discar", "success")
+        
+        if GUI_AVAILABLE:
+            update_gui_status(
+                total=total_contatos,
+                status="Pronto para discagem"
+            )
+
+        if not contatos:
+            log_combined("Nenhum contato para processar. Adicione números no CSV.", "warning")
+            sys.exit(0)
+
+        # Processar cada contato
+        sucesso_count = 0
+        falha_count = 0
+        
+        for i, contato in enumerate(contatos, 1):
+            # Verificar se deve pausar ou parar
+            if GUI_AVAILABLE:
+                while is_gui_paused() and not should_stop():
+                    time.sleep(0.5)
+                
+                if should_stop():
+                    log_combined("Execução interrompida pelo usuário", "warning")
+                    break
             
-            contatos = csv_manager.ler_contatos()
-            total_contatos = len(contatos)
-            log_combined(f"Encontrados {total_contatos} contatos para discar", "success")
+            numero = contato["numero"]
+            nome = contato.get("nome", "Não informado")
+            data_nascimento = contato.get("data_nascimento", "Não informada")
+            
+            log_combined(f"[{i}/{total_contatos}] Processando: {nome}")
             
             if GUI_AVAILABLE:
                 update_gui_status(
-                    total=total_contatos,
-                    status="Pronto para discagem"
+                    processados=i-1,
+                    sucesso=sucesso_count,
+                    falha=falha_count,
+                    current=f"{nome} - {numero}",
+                    status="Discando..."
                 )
-
-            if not contatos:
-                log_combined("Nenhum contato para processar. Adicione números no CSV.", "warning")
-                sys.exit(0)
-
-            # Processar cada contato
-            sucesso_count = 0
-            falha_count = 0
             
-            for i, contato in enumerate(contatos, 1):
-                # Verificar se deve pausar ou parar
+            try:
+                resultado = discar_e_transferir(
+                    numero, 
+                    nome, 
+                    data_nascimento, 
+                    CELULAR, 
+                    csv_manager
+                )
+                
+                # Atualizar contadores
+                if resultado == "ATENDEU":
+                    sucesso_count += 1
+                    log_combined(f"✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC", "success")
+                elif resultado == "NAO_ATENDEU":
+                    falha_count += 1
+                    log_combined(f"❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC", "warning")
+                
+                # Atualizar GUI
                 if GUI_AVAILABLE:
-                    while is_gui_paused() and not should_stop():
-                        time.sleep(0.5)
-                    
-                    if should_stop():
-                        log_combined("Execução interrompida pelo usuário", "warning")
-                        break
+                    update_gui_status(
+                        processados=i,
+                        sucesso=sucesso_count,
+                        falha=falha_count
+                    )
                 
-                numero = contato["numero"]
-                nome = contato.get("nome", "Não informado")
-                data_nascimento = contato.get("data_nascimento", "Não informada")
+                # Pausa entre chamadas
+                time.sleep(3)
                 
-                log_combined(f"[{i}/{total_contatos}] Processando: {nome}")
+            except Exception as e:
+                falha_count += 1
+                log_combined(f"Erro ao processar {numero}: {e}", "error")
+                csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
                 
                 if GUI_AVAILABLE:
                     update_gui_status(
-                        processados=i-1,
-                        sucesso=sucesso_count,
-                        falha=falha_count,
-                        current=f"{nome} - {numero}",
-                        status="Discando..."
+                        processados=i,
+                        falha=falha_count
                     )
-                
-                try:
-                    resultado = discar_e_transferir(
-                        numero, 
-                        nome, 
-                        data_nascimento, 
-                        CELULAR, 
-                        csv_manager
-                    )
-                    
-                    # Atualizar contadores
-                    if resultado == "ATENDEU":
-                        sucesso_count += 1
-                        log_combined(f"✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, registro feito por ADAC", "success")
-                    elif resultado == "NAO_ATENDEU":
-                        falha_count += 1
-                        log_combined(f"❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC", "warning")
-                    
-                    # Atualizar GUI
-                    if GUI_AVAILABLE:
-                        update_gui_status(
-                            processados=i,
-                            sucesso=sucesso_count,
-                            falha=falha_count
-                        )
-                    
-                    # Pausa entre chamadas
-                    time.sleep(3)
-                    
-                except Exception as e:
-                    falha_count += 1
-                    log_combined(f"Erro ao processar {numero}: {e}", "error")
-                    csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
-                    
-                    if GUI_AVAILABLE:
-                        update_gui_status(
-                            processados=i,
-                            falha=falha_count
-                        )
-                    continue
+                continue
 
-            # Relatório final
-            log_combined(f"=== ADAC - Processamento concluído ===", "success")
-            log_combined(f"📊 Total: {total_contatos} contatos", "success")
-            log_combined(f"✅ Sucesso: {sucesso_count}", "success")
-            log_combined(f"❌ Falha: {falha_count}", "warning" if falha_count > 0 else "success")
-            log_combined(f"📄 Log salvo em: {log_file}")
-            
-            if GUI_AVAILABLE:
-                update_gui_status(
-                    status="Concluído",
-                    processados=total_contatos,
-                    sucesso=sucesso_count,
-                    falha=falha_count,
-                    current="Processamento finalizado"
-                )
-
-        except Exception as e:
-            log_combined(f"Erro no processamento: {e}", "error")
-            if GUI_AVAILABLE:
-                update_gui_status(status=f"Erro: {str(e)}")
-            sys.exit(1)
+        # Relatório final
+        log_combined(f"=== ADAC - Processamento concluído ===", "success")
+        log_combined(f"📊 Total: {total_contatos} contatos", "success")
+        log_combined(f"✅ Sucesso: {sucesso_count}", "success")
+        log_combined(f"❌ Falha: {falha_count}", "warning" if falha_count > 0 else "success")
+        log_combined(f"📄 Log salvo em: {log_file}")
+        
+        if GUI_AVAILABLE:
+            update_gui_status(
+                status="Concluído",
+                processados=total_contatos,
+                sucesso=sucesso_count,
+                falha=falha_count,
+                current="Processamento finalizado"
+            )
 
     except KeyboardInterrupt:
         log_combined("Execução interrompida pelo usuário", "warning")
-        if GUI_AVAILABLE:
+        if GUI_AVAILABLE and gui:
             update_gui_status(status="Interrompido pelo usuário")
     except Exception as e:
         log_combined(f"Erro fatal: {e}", "error")
-        if GUI_AVAILABLE:
+        if GUI_AVAILABLE and gui:
             update_gui_status(status=f"Erro fatal: {str(e)}")
-        sys.exit(1)
-    
-    # Manter GUI aberta por alguns segundos
-    if GUI_AVAILABLE and gui:
-        time.sleep(5)
+    finally:
+        # Garantir que a GUI seja fechada corretamente
+        if GUI_AVAILABLE and gui:
+            gui.running = False
+            if gui_thread and gui_thread.is_alive():
+                gui_thread.join(timeout=2.0)
 
 if __name__ == "__main__":
     main()

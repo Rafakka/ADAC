@@ -14,7 +14,7 @@ class ADACGUI:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("ADAC - Auto Discador")
         
-        # Cores
+        # Cores (valores RGB)
         self.colors = {
             'bg': (0, 12, 24),
             'text': (180, 230, 180),
@@ -54,22 +54,18 @@ class ADACGUI:
     
     def init_display(self):
         """Inicializa o display"""
-        self.add_line("═" * 90, self.colors['border'])
-        self.add_line("    ADAC - AUTO DISCADOR AVANÇADO", self.colors['header'])
-        self.add_line("═" * 90, self.colors['border'])
+        self.add_line("═" * 90, 'border')
+        self.add_line("    ADAC - AUTO DISCADOR AVANÇADO", 'header')
+        self.add_line("═" * 90, 'border')
         self.add_line(f" Iniciado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
         self.add_line(" Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair")
-        self.add_line("═" * 90, self.colors['border'])
+        self.add_line("═" * 90, 'border')
         self.add_line("")
     
-    def add_line(self, text, color=None, level="info"):
-        """Adiciona uma linha ao buffer com formatação"""
-        if color is None:
-            color = self.colors['text']
-        
+    def add_line(self, text, level="info"):
+        """Adiciona uma linha ao buffer - versão simplificada"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         
-        # Adicionar ícone baseado no nível
         if level == "error":
             formatted_text = f"[{timestamp}] ❌ {text}"
             color = self.colors['error']
@@ -81,11 +77,13 @@ class ADACGUI:
             color = self.colors['success']
         else:
             formatted_text = f"[{timestamp}] 🔹 {text}"
+            color = self.colors['text']
         
         self.lines.append((formatted_text, color))
         if len(self.lines) > self.max_lines:
             self.lines = self.lines[-self.max_lines:]
     
+
     def update_status(self, status=None, device=None, csv=None, 
                      total=None, processados=None, sucesso=None, falha=None,
                      current=None):
@@ -203,10 +201,11 @@ class ADACGUI:
         ]
         
         for line in help_lines:
-            self.add_line(line, self.colors['header'], "info")
-    
-    def handle_events(self):
-        """Processa eventos da interface"""
+            self.add_line(line, 'header')
+
+def handle_events(self):
+    """Processa eventos da interface"""
+    try:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -226,6 +225,11 @@ class ADACGUI:
                     self.add_line(f"Discagem {status}", "warning" if self.paused else "success")
         
         return True
+    except pygame.error as e:
+        if "not initialized" in str(e):
+            self.running = False
+            return False
+        raise
     
     def run(self):
         """Loop principal da interface"""

@@ -4,7 +4,7 @@ echo.
 echo 🖥️  ADAC - Auto Discador
 echo.
 echo [1] Modo Texto (padrão)
-echo [2] Interface Gráfica
+echo [2] Interface Gráfica (Recomendado)
 echo.
 choice /c 12 /n /m "Escolha o modo: "
 if %errorlevel% equ 1 (
