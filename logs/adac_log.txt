@@ -199,3 +199,104 @@
 2025-08-26 16:47:17,865 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
 2025-08-26 16:47:17,868 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-08-26 16:47:17,873 - Nenhum celular detectado.
+2025-08-26 16:48:48,517 - Interface gráfica inicializada
+2025-08-26 16:48:48,517 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:48:48,517 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:48:48,517 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:48:48,520 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:48:48,522 - Nenhum celular detectado.
+2025-08-26 16:48:56,788 - Interface gráfica inicializada
+2025-08-26 16:48:56,788 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:48:56,788 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:48:56,788 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:48:56,791 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:48:56,800 - Nenhum celular detectado.
+2025-08-26 16:49:02,220 - Interface gráfica inicializada
+2025-08-26 16:49:02,220 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:49:02,221 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:49:02,221 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:49:02,235 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:49:02,251 - Nenhum celular detectado.
+2025-08-26 16:49:42,477 - Interface gráfica inicializada
+2025-08-26 16:49:42,478 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:49:42,479 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-26 16:49:42,486 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-26 16:49:42,496 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:49:42,506 - Nenhum celular detectado.
+2025-08-26 16:54:45,863 - Interface gráfica inicializada
+2025-08-26 16:54:45,864 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:54:45,867 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:54:45,874 - Nenhum celular detectado.
+2025-08-26 16:54:45,874 - 📋 Usando arquivo CSV: /home/kai/Git/ADAC/contatos/contatos.csv
+2025-08-26 16:54:45,879 - Encontrados 3 contatos para discar
+2025-08-26 16:54:45,881 - [1/3] Processando: João Silva
+2025-08-26 16:54:45,881 - Erro ao processar 0082825555: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:54:45,883 - [2/3] Processando: Maria Santos
+2025-08-26 16:54:45,883 - Erro ao processar 11999999999: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:54:45,884 - [3/3] Processando: Carlos Oliveira
+2025-08-26 16:54:45,884 - Erro ao processar 2188888888: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:54:45,885 - === ADAC - Processamento concluído ===
+2025-08-26 16:54:45,885 - 📊 Total: 3 contatos
+2025-08-26 16:54:45,886 - ✅ Sucesso: 0
+2025-08-26 16:54:45,886 - ❌ Falha: 3
+2025-08-26 16:54:45,887 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-26 16:54:45,887 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:54:45,887 - Ocorreu um erro. Pressione ESC para fechar.
+2025-08-26 16:55:14,870 - Interface gráfica inicializada
+2025-08-26 16:55:14,870 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:55:14,877 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:55:14,904 - Nenhum celular detectado.
+2025-08-26 16:55:14,905 - 📋 Usando arquivo CSV: /home/kai/Git/ADAC/contatos/contatos.csv
+2025-08-26 16:55:14,905 - Encontrados 3 contatos para discar
+2025-08-26 16:55:14,905 - [1/3] Processando: João Silva
+2025-08-26 16:55:14,905 - Erro ao processar 0082825555: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:55:14,905 - [2/3] Processando: Maria Santos
+2025-08-26 16:55:14,906 - Erro ao processar 11999999999: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:55:14,912 - [3/3] Processando: Carlos Oliveira
+2025-08-26 16:55:14,912 - Erro ao processar 2188888888: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:55:14,913 - === ADAC - Processamento concluído ===
+2025-08-26 16:55:14,914 - 📊 Total: 3 contatos
+2025-08-26 16:55:14,915 - ✅ Sucesso: 0
+2025-08-26 16:55:14,915 - ❌ Falha: 3
+2025-08-26 16:55:14,916 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-26 16:55:14,917 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:55:14,917 - Ocorreu um erro. Pressione ESC para fechar.
+2025-08-26 16:56:36,414 - Interface gráfica inicializada
+2025-08-26 16:56:36,414 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:56:36,418 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:56:36,421 - Nenhum celular detectado.
+2025-08-26 16:56:36,422 - 📋 Usando arquivo CSV: /home/kai/Git/ADAC/contatos/contatos.csv
+2025-08-26 16:56:36,422 - Encontrados 3 contatos para discar
+2025-08-26 16:56:36,424 - [1/3] Processando: João Silva
+2025-08-26 16:56:36,424 - Erro ao processar 0082825555: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:56:36,425 - [2/3] Processando: Maria Santos
+2025-08-26 16:56:36,425 - Erro ao processar 11999999999: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:56:36,426 - [3/3] Processando: Carlos Oliveira
+2025-08-26 16:56:36,426 - Erro ao processar 2188888888: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:56:36,427 - === ADAC - Processamento concluído ===
+2025-08-26 16:56:36,427 - 📊 Total: 3 contatos
+2025-08-26 16:56:36,427 - ✅ Sucesso: 0
+2025-08-26 16:56:36,427 - ❌ Falha: 3
+2025-08-26 16:56:36,428 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-26 16:56:36,428 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:56:36,428 - Ocorreu um erro. Pressione ESC para fechar.
+2025-08-26 16:59:03,924 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:59:05,293 - Interface gráfica inicializada
+2025-08-26 16:59:05,294 - === ADAC - Auto Discador iniciado ===
+2025-08-26 16:59:05,297 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-26 16:59:05,300 - Nenhum celular detectado.
+2025-08-26 16:59:05,301 - 📋 Usando arquivo CSV: /home/kai/Git/ADAC/contatos/contatos.csv
+2025-08-26 16:59:05,302 - Encontrados 3 contatos para discar
+2025-08-26 16:59:05,303 - [1/3] Processando: João Silva
+2025-08-26 16:59:05,303 - Erro ao processar 0082825555: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:59:05,304 - [2/3] Processando: Maria Santos
+2025-08-26 16:59:05,304 - Erro ao processar 11999999999: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:59:05,315 - [3/3] Processando: Carlos Oliveira
+2025-08-26 16:59:05,316 - Erro ao processar 2188888888: cannot access local variable 'CELULAR' where it is not associated with a value
+2025-08-26 16:59:05,316 - === ADAC - Processamento concluído ===
+2025-08-26 16:59:05,316 - 📊 Total: 3 contatos
+2025-08-26 16:59:05,316 - ✅ Sucesso: 0
+2025-08-26 16:59:05,316 - ❌ Falha: 3
+2025-08-26 16:59:05,316 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-26 16:59:05,316 - Processamento concluído. Pressione ESC para fechar.
+2025-08-26 16:59:05,317 - Ocorreu um erro. Pressione ESC para fechar.

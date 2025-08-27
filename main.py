@@ -47,8 +47,18 @@ def log_combined(message, level="info"):
     else:
         logging.info(message)
 
+def mostrar_ajuda_erro():
+    """Mostra ajuda quando ocorre erro"""
+    log_combined("", "warning")
+    log_combined("🔧 SOLUÇÃO DE PROBLEMAS:", "header")
+    log_combined("1. Verifique se o cabo USB está conectado", "warning")
+    log_combined("2. Ative a depuração USB no celular", "warning") 
+    log_combined("3. Autorize o computador no popup do celular", "warning")
+    log_combined("4. Execute: adb devices para testar", "warning")
+    log_combined("", "warning")
+
 def verificar_adb():
-    """Verifica se o ADB está funcionando"""
+    """Verifica se o ADB está funcionando - NÃO USA sys.exit()"""
     try:
         result = subprocess.run([ADB_PATH, "version"], capture_output=True, text=True, timeout=10)
         if result.returncode != 0:
@@ -58,10 +68,17 @@ def verificar_adb():
         return True
     except Exception as e:
         log_combined(f"Erro ao verificar ADB: {e}", "error")
-        return False
+        return False  # Retorna False, não sai do programa
+
+if not verificar_adb():
+    log_combined("ADB não disponível.", "error")
+    mostrar_ajuda_erro()  # 👈 Mostra ajuda
+    if GUI_AVAILABLE:
+        update_gui_status(status="Erro - ADB não disponível")
+    execution_successful = False
 
 def detectar_dispositivos():
-    """Detecta dispositivos Android conectados"""
+    """Detecta dispositivos Android - NÃO USA sys.exit()"""
     try:
         result = subprocess.run([ADB_PATH, "devices", "-l"], capture_output=True, text=True, timeout=30)
         devices = []
@@ -76,7 +93,7 @@ def detectar_dispositivos():
         
     except Exception as e:
         log_combined(f"Erro ao detectar dispositivos: {e}", "error")
-        return None
+        return None  # Retorna None, não sai do programa
 
 def encontrar_arquivo_csv():
     """Encontra automaticamente o arquivo CSV na pasta contatos/"""
@@ -101,6 +118,7 @@ def main():
     # Inicializar GUI se disponível
     gui = None
     gui_thread = None
+    execution_successful = True  # Nova variável para controlar sucesso
     
     if GUI_AVAILABLE:
         try:
@@ -109,7 +127,7 @@ def main():
                 gui_thread = threading.Thread(target=gui.run)
                 gui_thread.daemon = True
                 gui_thread.start()
-                time_module.sleep(1)  # Usar time_module em vez de time
+                time_module.sleep(1)
                 log_combined("Interface gráfica inicializada", "success")
         except Exception as e:
             log_combined(f"Erro ao inicializar GUI: {e}", "error")
@@ -117,30 +135,37 @@ def main():
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
-        log_combined(f"📁 Pasta de contatos: {CONTATOS_DIR}")
-        log_combined(f"📁 Pasta de logs: {LOGS_DIR}")
         
         if GUI_AVAILABLE and gui:
             update_gui_status(status="Inicializando...")
 
+        # Verificar ADB
         if not verificar_adb():
             log_combined("ADB não disponível.", "error")
             if GUI_AVAILABLE:
                 update_gui_status(status="Erro - ADB não disponível")
-            sys.exit(1)
+            execution_successful = False
+            # NÃO usa sys.exit() aqui!
 
-        devices = detectar_dispositivos()
-        if not devices:
-            log_combined("Nenhum celular detectado.", "error")
+        # Se ADB não está disponível, pular o resto
+        if not execution_successful:
+            log_combined("Aguardando correção do problema...", "warning")
             if GUI_AVAILABLE:
-                update_gui_status(status="Erro - Nenhum dispositivo")
-            sys.exit(1)
-
-        CELULAR = devices[0]
-        log_combined(f"Usando celular: {CELULAR}", "success")
-        
-        if GUI_AVAILABLE:
-            update_gui_status(device=f"Conectado: {CELULAR}")
+                update_gui_status(status="Aguardando correção - Verifique ADB")
+        else:
+            # Detectar dispositivos (só se ADB está OK)
+            devices = detectar_dispositivos()
+            if not devices:
+                log_combined("Nenhum celular detectado.", "error")
+                if GUI_AVAILABLE:
+                    update_gui_status(status="Erro - Nenhum dispositivo")
+                execution_successful = False
+            else:
+                CELULAR = devices[0]
+                log_combined(f"Usando celular: {CELULAR}", "success")
+                
+                if GUI_AVAILABLE:
+                    update_gui_status(device=f"Conectado: {CELULAR}")
 
         csv_path = encontrar_arquivo_csv()
         log_combined(f"📋 Usando arquivo CSV: {csv_path}")
@@ -250,29 +275,49 @@ def main():
         log_combined("Execução interrompida pelo usuário", "warning")
         if GUI_AVAILABLE and gui:
             update_gui_status(status="Interrompido pelo usuário")
+        execution_successful = False
+        
     except Exception as e:
         log_combined(f"Erro fatal: {e}", "error")
         if GUI_AVAILABLE and gui:
             update_gui_status(status=f"Erro fatal: {str(e)}")
+        execution_successful = False
+        
     finally:
+        # SEMPRE manter a GUI aberta, mesmo com erro
         if GUI_AVAILABLE and gui:
-            try:
-                if hasattr(gui, 'wait_for_escape_safe'):
-                    gui.wait_for_escape_safe()
-                else:
-                    # Fallback
-                    time_module.sleep(5)
-            except Exception as e:
-                log_combined(f"Erro: {e}", "error")
+            if execution_successful:
+                log_combined("Processamento concluído. Pressione ESC para fechar.", "success")
+                if GUI_AVAILABLE:
+                    update_gui_status(status="Concluído - Pressione ESC")
+            else:
+                log_combined("Ocorreu um erro. Pressione ESC para fechar.", "error")
+                if GUI_AVAILABLE:
+                    update_gui_status(status="Erro - Pressione ESC")
             
-            # Fechamento garantido
-            gui.running = False
             try:
-                pygame.quit()
-            except:
-                pass
+                # Aguardar ESC independentemente de sucesso ou erro
+                waiting = True
+                clock = pygame.time.Clock()
                 
+                while waiting and gui.running:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                            waiting = False
+                            gui.running = False
+                    
+                    if hasattr(gui, 'draw_interface'):
+                        gui.draw_interface()
+                    clock.tick(30)
+                    
+            except Exception as e:
+                log_combined(f"Erro ao aguardar fechamento: {e}", "error")
+                time_module.sleep(3)
+            
+            # Fechamento final
+            gui.running = False
             if gui_thread and gui_thread.is_alive():
-                gui_thread.join(timeout=1.0)
+                gui_thread.join(timeout=2.0)
+
 if __name__ == "__main__":
     main()
