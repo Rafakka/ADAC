@@ -332,3 +332,18 @@
 2025-08-27 08:53:39,761 - 1. Pressione ESC para sair
 2025-08-27 08:53:39,761 - 2. Conecte outro celular e reinicie
 2025-08-27 08:53:39,761 - 
+2025-08-27 09:34:55,886 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-27 09:34:57,286 - Interface gráfica inicializada
+2025-08-27 09:34:57,287 - === ADAC - Auto Discador iniciado ===
+2025-08-27 09:34:57,293 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-27 09:34:57,293 - 🔍 Aguardando conexão do celular...
+2025-08-27 09:34:57,294 - 💡 Conecte o celular via USB e ative a depuração USB
+2025-08-27 09:35:00,307 - ⏳ Aguardando conexão do celular...
+2025-08-27 09:35:05,313 - ⏳ Aguardando conexão do celular...
+2025-08-27 09:35:07,314 - Erro ao aguardar celular: video system not initialized
+2025-08-27 09:35:07,315 - Operação cancelada pelo usuário
+2025-08-27 09:35:07,315 - 
+2025-08-27 09:35:07,315 - 🎯 O que você deseja fazer?
+2025-08-27 09:35:07,315 - 1. Pressione ESC para sair
+2025-08-27 09:35:07,315 - 2. Conecte outro celular e reinicie
+2025-08-27 09:35:07,316 - 

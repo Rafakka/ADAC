@@ -115,7 +115,7 @@ def encontrar_arquivo_csv():
     
 def esperar_celular_conectar(gui=None):
     """Aguarda até que um celular seja conectado ou ESC seja pressionado"""
-    global GUI_AVAILABLE, gui
+    global GUI_AVAILABLE
     
     log_combined("🔍 Aguardando conexão do celular...", "warning")
     log_combined("💡 Conecte o celular via USB e ative a depuração USB", "warning")
