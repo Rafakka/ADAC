@@ -1,0 +1,55 @@
+2025-08-28 16:29:07,175 -  Iniciado em: 28/08/2025 16:29:07
+2025-08-28 16:29:07,175 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-08-28 16:29:07,175 - 
+2025-08-28 16:29:08,182 - Interface gráfica inicializada
+2025-08-28 16:29:08,182 - === ADAC - Auto Discador iniciado ===
+2025-08-28 16:29:08,182 - === ADAC - Auto Discador iniciado ===
+2025-08-28 16:29:08,182 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-28 16:29:08,182 - 📁 Pasta de contatos: /home/kai/Git/ADAC/contatos
+2025-08-28 16:29:08,182 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-28 16:29:08,182 - 📁 Pasta de logs: /home/kai/Git/ADAC/logs
+2025-08-28 16:29:08,236 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-08-28 16:29:08,240 - Dispositivo detectado: 0082825555             device usb:1-2 product:miami_g model:motorola_edge_30_neo device:miami transport_id:3
+2025-08-28 16:29:08,240 - Usando celular: 0082825555
+2025-08-28 16:29:08,241 - 📋 Arquivo CSV encontrado: /home/kai/Git/ADAC/contatos/contatos.csv
+2025-08-28 16:29:08,241 - ✅ Encontrados 3 contatos para discar
+2025-08-28 16:29:08,241 - [1/3] Processando: João Silva
+2025-08-28 16:29:08,241 - [1/3] Processando: João Silva
+2025-08-28 16:29:08,241 - ADAC - Iniciando discagem: João Silva (15/05/1990) - 0082825555
+2025-08-28 16:29:08,241 - ADAC - Número de redirecionamento: 1136529510
+2025-08-28 16:29:11,711 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-08-28 16:29:11,712 - 🔄 Transferindo para: 1136529510
+2025-08-28 16:29:15,796 - ✅ Transferência realizada
+2025-08-28 16:29:25,796 - ADAC - ✅ João Silva (15/05/1990) - 0082825555 - ATENDEU, transferido para 1136529510, registro feito por ADAC
+2025-08-28 16:29:27,913 - ✅ João Silva (15/05/1990) - 0082825555 - ATENDEU, registro feito por ADAC
+2025-08-28 16:29:30,914 - [2/3] Processando: Maria Santos
+2025-08-28 16:29:30,914 - [2/3] Processando: Maria Santos
+2025-08-28 16:29:30,915 - ADAC - Iniciando discagem: Maria Santos (20/08/1985) - 11999999999
+2025-08-28 16:29:30,915 - ADAC - Número de redirecionamento: 1136529510
+2025-08-28 16:29:34,058 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-08-28 16:29:34,059 - 🔄 Transferindo para: 1136529510
+2025-08-28 16:29:37,600 - ✅ Transferência realizada
+2025-08-28 16:29:47,604 - ADAC - ✅ Maria Santos (20/08/1985) - 11999999999 - ATENDEU, transferido para 1136529510, registro feito por ADAC
+2025-08-28 16:29:49,714 - ✅ Maria Santos (20/08/1985) - 11999999999 - ATENDEU, registro feito por ADAC
+2025-08-28 16:29:52,714 - [3/3] Processando: Carlos Oliveira
+2025-08-28 16:29:52,714 - [3/3] Processando: Carlos Oliveira
+2025-08-28 16:29:52,715 - ADAC - Iniciando discagem: Carlos Oliveira (10/12/1978) - 2188888888
+2025-08-28 16:29:52,715 - ADAC - Número de redirecionamento: 1136529510
+2025-08-28 16:29:55,842 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-08-28 16:29:55,842 - 🔄 Transferindo para: 1136529510
+2025-08-28 16:29:59,287 - ✅ Transferência realizada
+2025-08-28 16:30:09,291 - ADAC - ✅ Carlos Oliveira (10/12/1978) - 2188888888 - ATENDEU, transferido para 1136529510, registro feito por ADAC
+2025-08-28 16:30:11,404 - ✅ Carlos Oliveira (10/12/1978) - 2188888888 - ATENDEU, registro feito por ADAC
+2025-08-28 16:30:14,408 - === ADAC - Processamento concluído ===
+2025-08-28 16:30:14,408 - 📊 Total: 3 contatos
+2025-08-28 16:30:14,408 - ✅ Sucesso: 3
+2025-08-28 16:30:14,408 - ❌ Falha: 0
+2025-08-28 16:30:14,409 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-28 16:30:14,409 - 📄 Log salvo em: /home/kai/Git/ADAC/logs/adac_log.txt
+2025-08-28 16:30:14,409 - Processamento concluído. Pressione ESC para fechar.
+2025-08-28 16:30:14,409 - 
+2025-08-28 16:30:14,409 - 
+2025-08-28 16:30:14,409 - 🎯 Pressione ESC para fechar o programa
+2025-08-28 16:30:14,409 - 🎯 Pressione ESC para fechar o programa
+2025-08-28 16:30:14,409 - 
+2025-08-28 16:30:14,409 - 
