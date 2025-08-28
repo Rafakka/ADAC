@@ -12,6 +12,7 @@ os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
 from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
+from logger_manager import log_combined
 
 # Configuração de GUI - usar variável global
 GUI_AVAILABLE = False
@@ -34,18 +35,7 @@ logging.basicConfig(
     ]
 )
 
-def log_combined(message, level="info"):
-    """Log para ambos GUI e console"""
-    global GUI_AVAILABLE
-    if GUI_AVAILABLE:
-        log_message(message, level)
-    
-    if level == "error":
-        logging.error(message)
-    elif level == "warning":
-        logging.warning(message)
-    else:
-        logging.info(message)
+
 
 def verificar_adb():
     """Verifica se o ADB está funcionando"""
