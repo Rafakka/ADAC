@@ -233,17 +233,17 @@ def main():
             update_gui_status(status=f"Erro fatal: {str(e)}")
             
     finally:
-        # SEMPRE manter a GUI aberta para decisão do usuário
+    # SEMPRE manter a GUI aberta para decisão do usuário
         if GUI_AVAILABLE and gui:
             log_combined("", "info")
             log_combined("🎯 Pressione ESC para fechar o programa", "header")
             log_combined("", "info")
+        try:
+            waiting = True
+            clock = pygame.time.Clock()
             
-            try:
-                waiting = True
-                clock = pygame.time.Clock()
-                
-                while waiting and gui.running:
+            while waiting and gui.running:
+                try:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                             waiting = False
@@ -254,13 +254,27 @@ def main():
                         gui.draw_interface()
                     clock.tick(30)
                     
-            except Exception as e:
-                log_combined(f"Erro: {e}", "error")
-                time_module.sleep(3)
-            
+                except pygame.error as e:
+                    if "X Error" in str(e) or "MIT-SHM" in str(e):
+                        # Ignorar erros gráficos do X11
+                        continue
+                    else:
+                        raise
+                        
+        except Exception as e:
+            log_combined(f"Erro: {e}", "error")
+            time_module.sleep(3)
+        
+        finally:
+            # Fechamento seguro - não force pygame.quit() se já foi feito
             gui.running = False
-            if gui_thread and gui_thread.is_alive():
-                gui_thread.join(timeout=2.0)
+            try:
+                if gui_thread and gui_thread.is_alive():
+                    gui_thread.join(timeout=1.0)
+            except:
+                pass
+            
+            # Não chame pygame.quit() aqui - deixe a thread da GUI fazer isso
             
 if __name__ == "__main__":
     main()
