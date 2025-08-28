@@ -4,6 +4,7 @@ import platform
 import logging
 
 GUI_ENABLED = True
+GUI_AVAILABLE = False
 
 # Determinar caminho base
 if getattr(sys, 'frozen', False):

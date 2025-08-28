@@ -347,3 +347,29 @@
 2025-08-27 09:35:07,315 - 1. Pressione ESC para sair
 2025-08-27 09:35:07,315 - 2. Conecte outro celular e reinicie
 2025-08-27 09:35:07,316 - 
+2025-08-28 10:46:59,148 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:46:59,161 - === ADAC iniciado ===
+2025-08-28 10:46:59,654 - ADB disponível: Android Debug Bridge version 1.0.41
+Version 36.0.1-13811061
+Installed as /home/kai/Git/ADAC/adb/Linux/adb
+Running on Linux 6.1.0-38-amd64 (x86_64)
+2025-08-28 10:46:59,654 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:46:59,654 - 🔍 Aguardando conexão do celular...
+2025-08-28 10:46:59,655 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:46:59,655 - 💡 Conecte o celular via USB e ative a depuração USB
+2025-08-28 10:52:06,857 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:06,860 - === ADAC iniciado ===
+2025-08-28 10:52:06,866 - ADB disponível: Android Debug Bridge version 1.0.41
+Version 36.0.1-13811061
+Installed as /home/kai/Git/ADAC/adb/Linux/adb
+Running on Linux 6.1.0-38-amd64 (x86_64)
+2025-08-28 10:52:06,867 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:06,867 - 🔍 Aguardando conexão do celular...
+2025-08-28 10:52:06,867 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:06,867 - 💡 Conecte o celular via USB e ative a depuração USB
+2025-08-28 10:52:10,879 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:10,880 - ⏳ Aguardando conexão do celular...
+2025-08-28 10:52:15,884 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:15,885 - Erro ao aguardar celular: video system not initialized
+2025-08-28 10:52:15,885 - Falha ao logar na GUI: 'ADACGUI' object has no attribute 'log_message'
+2025-08-28 10:52:15,886 - Operação cancelada pelo usuário
