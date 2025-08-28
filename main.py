@@ -256,23 +256,25 @@ def main():
             update_gui_status(status=f"Erro fatal: {str(e)}")
     finally:
         if GUI_AVAILABLE and gui:
-            try:
-                if hasattr(gui, 'wait_for_escape_safe'):
-                    gui.wait_for_escape_safe()
-                else:
-                    # Fallback
-                    time_module.sleep(5)
-            except Exception as e:
-                log_combined(f"Erro: {e}", "error")
+            print("🔧 Iniciando fechamento seguro...")
             
-            # Fechamento garantido
             gui.running = False
-            try:
-                pygame.quit()
-            except:
-                pass
-                
+            
+            wait_attempts = 0
+            while gui_thread and gui_thread.is_alive() and wait_attempts < 10:
+                time_module.sleep(0.1)
+                wait_attempts += 1
+            
             if gui_thread and gui_thread.is_alive():
-                gui_thread.join(timeout=1.0)
+                gui_thread.join(timeout=0.5)
+            
+            try:
+                if pygame.get_init():
+                    pygame.quit()
+                    print("✅ PyGame fechado com sucesso")
+            except Exception as e:
+                print(f"⚠️  Erro ao fechar PyGame: {e}")
+            print("✅ Fechamento concluído")
+            
 if __name__ == "__main__":
     main()
