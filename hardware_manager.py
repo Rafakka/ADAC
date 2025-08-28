@@ -10,9 +10,11 @@ def detectar_dispositivos():
         devices = []
         for line in result.stdout.splitlines():
             if "device usb:" in line:
-                device_id = line.split()[0]
-                devices.append(device_id)
-                log_combined(f"Dispositivo detectado: {line}", "success")
+                parts = line.split()
+                device_id = parts[0]
+                model = next((p.split(":")[1] for p in parts if p.startswith("model:")), "Desconhecido")
+                devices.append({"id": device_id, "model": model})
+                log_combined(f"Dispositivo detectado: {device_id} ({model})", "success")
         return devices if devices else None
     except Exception as e:
         log_combined(f"Erro ao detectar dispositivos: {e}", "error")
@@ -25,28 +27,37 @@ def esperar_celular_conectar(gui=None):
 
     try:
         import pygame
+        import time as time_module
         clock = pygame.time.Clock()
+
         while True:
             devices = detectar_dispositivos()
-            if devices:
-                log_combined(f"✅ Celular detectado: {devices[0]}", "success", gui)
-                return devices[0]
+            
+            if devices:  # se encontrou pelo menos um dispositivo
+                celular_id = devices[0]["id"]
+                modelo = devices[0]["model"]
+                log_combined(f"✅ Celular detectado: {celular_id} ({modelo})", "success", gui)
+                return celular_id  # <--- retorna o ID imediatamente
 
+            # Verifica eventos do usuário
             for event in pygame.event.get():
-                if event.type==pygame.QUIT:
+                if event.type == pygame.QUIT:
                     log_combined("Operação cancelada pelo usuário", "warning", gui)
                     return None
-                elif event.type==pygame.KEYDOWN and event.key==pygame.K_ESCAPE:
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     log_combined("Operação cancelada pelo usuário", "warning", gui)
                     return None
 
             if gui:
                 gui.draw_interface()
             
+            # Log de waiting a cada 5s
             if int(time_module.time()) % 5 == 0:
                 log_combined("⏳ Aguardando conexão do celular...", "warning", gui)
 
             clock.tick(1)
+
     except Exception as e:
         log_combined(f"Erro ao aguardar celular: {e}", "error", gui)
         return None
+

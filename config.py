@@ -6,7 +6,7 @@ import logging
 GUI_ENABLED = True
 GUI_AVAILABLE = False
 ADB_PATH = "adb"            
-CSV_PATH = "contatos.csv"
+CSV_PATH = "./dados/contatos.csv"
 
 # Determinar caminho base
 if getattr(sys, 'frozen', False):

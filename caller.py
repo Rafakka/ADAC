@@ -4,6 +4,7 @@ import logging
 import os
 from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO
 from csv_manager import CSVManager
+from logger import log_combined
 
 def executar_comando_adb(comando, celular=None, timeout=30):
     """Executa um comando ADB, opcionalmente em um dispositivo específico"""
@@ -70,7 +71,6 @@ def transferir_ligacao(celular):
         logging.exception(f"❌ Erro na transferência: {e}")
         return False
 
-
 def verificar_chamada_ativa(celular):
     """Retorna o status da chamada: TOCANDO, ATENDEU, NAO_ATENDEU ou INDEFINIDO"""
     try:
@@ -96,64 +96,75 @@ def verificar_chamada_ativa(celular):
         return "ERRO"
 
 
-def discar_e_transferir(numero, nome, data_nascimento, celular, csv_manager: CSVManager):
-    """Disca número e transfere a chamada para o número configurado"""
-    try:
-        logging.info(f"ADAC - Iniciando discagem: {nome} ({data_nascimento}) - {numero}")
+def discar_e_transferir(numero, nome, data_nascimento, celular, csv_manager: CSVManager, gui=None):
+    """
+    Disca número até 3 tentativas.
+    Se atender → transfere automaticamente.
+    Se não atender → marca como NAO_ATENDEU no CSV.
+    """
+    tentativas = 3
+    ultima_resposta = "ERRO"
 
-        # Discar usando intent
-        if not executar_comando_adb([
-            "shell", "am", "start", "-a",
-            "android.intent.action.CALL", "-d", f"tel:{numero}"
-        ], celular):
-            logging.error("ADAC - ❌ Falha ao iniciar discagem")
-            if csv_manager:
-                csv_manager.marcar_como_processado(numero, "FALHA_DISCAGEM", nome, data_nascimento)
-            return "FALHA_DISCAGEM"
+    for tentativa in range(1, tentativas + 1):
+        log_combined(
+            f"📞 Tentativa {tentativa}/{tentativas} - Discando: {nome} ({numero})",
+            "info", gui
+        )
 
-        # Esperar e verificar status da chamada com loop de checagem
-        timeout = TEMPO_DISCAGEM
-        interval = 1
-        status_chamada = "INDEFINIDO"
-        while timeout > 0:
-            status_chamada = verificar_chamada_ativa(celular)
-            if status_chamada in ["ATENDEU", "NAO_ATENDEU"]:
-                break
-            time.sleep(interval)
-            timeout -= interval
+        if gui:
+            gui.update_status(current=nome, processados=tentativa)
 
-        if status_chamada == "ATENDEU":
-            logging.info("ADAC - ✅ Chamada atendida! Transferindo...")
-            transferir_ligacao(celular)
-            time.sleep(TEMPO_TRANSFERENCIA)
-            logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, transferido para {NUMERO_REDIRECIONAMENTO}")
+        try:
+            # Discar usando intent do Android
+            if not executar_comando_adb([
+                "shell", "am", "start", "-a",
+                "android.intent.action.CALL", "-d", f"tel:{numero}"
+            ], celular):
+                log_combined("❌ Falha ao iniciar discagem", "error", gui)
+                ultima_resposta = "FALHA_DISCAGEM"
+                continue
 
-            if csv_manager:
-                csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
+            # Espera até TEMPO_DISCAGEM segundos pela resposta
+            timeout = TEMPO_DISCAGEM
+            status_chamada = "INDEFINIDO"
+            while timeout > 0:
+                status_chamada = verificar_chamada_ativa(celular)
+                if status_chamada in ["ATENDEU", "NAO_ATENDEU"]:
+                    break
+                time.sleep(1)
+                timeout -= 1
 
-        elif status_chamada == "NAO_ATENDEU":
-            logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU")
-            if csv_manager:
-                csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
+            # Caso tenha atendido → transferir
+            if status_chamada == "ATENDEU":
+                log_combined(f"✅ {nome} atendeu, transferindo...", "success", gui)
+                transferir_ligacao(celular)
+                time.sleep(TEMPO_TRANSFERENCIA)
+                ultima_resposta = "ATENDEU"
 
-        else:
-            logging.warning(f"ADAC - Status da chamada indefinido para {numero}")
-            if csv_manager:
-                csv_manager.marcar_como_processado(numero, "INDEFINIDO", nome, data_nascimento)
+                if csv_manager:
+                    csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
+                break  # não precisa tentar de novo
 
-        # Encerrar chamada e voltar para home
-        executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", celular)
-        time.sleep(1)
-        executar_comando_adb("shell input keyevent KEYCODE_HOME", celular)
+            elif status_chamada == "NAO_ATENDEU":
+                log_combined(f"❌ {nome} não atendeu", "error", gui)
+                ultima_resposta = "NAO_ATENDEU"
 
-        return status_chamada
+            else:
+                log_combined(f"⚠️ Status indefinido para {nome}: {status_chamada}", "warning", gui)
+                ultima_resposta = "INDEFINIDO"
 
-    except Exception as e:
-        logging.exception(f"ADAC - 💥 Erro no processo de {numero}: {e}")
-        executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", celular)
-        executar_comando_adb("shell input keyevent KEYCODE_HOME", celular)
+        except Exception as e:
+            logging.exception(f"Erro ao discar {numero}: {e}")
+            ultima_resposta = "ERRO"
 
-        if csv_manager:
-            csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
+        finally:
+            # Encerrar chamada a cada tentativa
+            executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", celular)
+            time.sleep(1)
+            executar_comando_adb("shell input keyevent KEYCODE_HOME", celular)
 
-        return "ERRO"
+    # Marca no CSV depois das tentativas
+    if csv_manager and ultima_resposta != "ATENDEU":
+        csv_manager.marcar_como_processado(numero, ultima_resposta, nome, data_nascimento)
+
+    return ultima_resposta

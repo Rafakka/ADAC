@@ -1,5 +1,6 @@
 
 import logging
+import os
 
 # Logging console
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
