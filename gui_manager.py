@@ -1,9 +1,63 @@
+import threading
 import pygame
 import sys
 import os
 import logging
+import time as time_module 
 from datetime import datetime
 from config import CONTATOS_DIR, LOGS_DIR
+from gui_integrada import init_gui, update_gui_status
+from logger import log_combined
+from main import GUI_AVAILABLE
+
+def keep_gui_running(gui, gui_thread):
+    if not GUI_AVAILABLE or gui is None:
+        return
+    
+    log_combined("\n🎯 O que você deseja fazer?", "header")
+    log_combined("1. Pressione ESC para sair", "info")
+    log_combined("2. Conecte outro celular e reinicie", "info")
+
+    waiting = True
+    clock = pygame.time.Clock()
+    
+    while waiting and getattr(gui, 'running', False):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                waiting = False
+                gui.running = False
+                log_combined("Aplicação encerrada", "success")
+        if hasattr(gui, 'draw_interface'):
+            gui.draw_interface()
+        clock.tick(30)
+
+    gui.running = False
+    if gui_thread and gui_thread.is_alive():
+        gui_thread.join(timeout=2.0)
+
+def init_gui_if_enabled():
+    gui = None
+    gui_thread = None
+    if GUI_AVAILABLE:
+        try:
+            gui = init_gui()
+            if gui:
+                gui_thread = threading.Thread(target=gui.run)
+                gui_thread.daemon = True
+                gui_thread.start()
+                time_module.sleep(1)
+                log_combined("Interface gráfica inicializada", "success")
+        except Exception as e:
+            log_combined(f"Erro ao inicializar GUI: {e}", "error")
+    return gui, gui_thread
+
+def update_gui_status_safe(gui, **kwargs):
+    if GUI_AVAILABLE and gui:
+        try:
+            update_gui_status(**kwargs)
+        except Exception as e:
+            log_combined(f"Erro ao atualizar GUI: {e}", "error")
+
 
 class ADACGUI:
     def __init__(self):

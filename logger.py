@@ -26,3 +26,9 @@ def mostrar_ajuda_erro():
     log_combined("4. 🔄 Execute: adb devices para testar", "warning")
     log_combined("5. 🚫 Pressione ESC para cancelar", "warning")
     log_combined("", "warning")
+
+def log_final_report(total, sucesso, falha):
+    log_combined("=== ADAC - Processamento concluído ===", "success")
+    log_combined(f"📊 Total: {total} contatos", "success")
+    log_combined(f"✅ Sucesso: {sucesso}", "success")
+    log_combined(f"❌ Falha: {falha}", "warning" if falha > 0 else "success")

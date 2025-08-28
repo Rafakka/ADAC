@@ -1,8 +1,70 @@
 import csv
 import os
 from datetime import datetime
+from caller import discar_e_transferir
 from config import CONTATOS_DIR, CSV_DEFAULT_PATH
+from gui_integrada import is_gui_paused, should_stop
+from gui_manager import update_gui_status_safe
 from logger import log_combined
+from main import GUI_AVAILABLE
+import time as time_module 
+
+def load_contacts(gui):
+    csv_path = encontrar_arquivo_csv()
+    log_combined(f"📋 Usando arquivo CSV: {csv_path}")
+    update_gui_status_safe(gui, csv=f"Carregado: {os.path.basename(csv_path)}")
+    
+    csv_manager = CSVManager([csv_path])
+    csv_manager.criar_csv_inicial()
+    
+    contatos = csv_manager.ler_contatos()
+    total = len(contatos)
+    log_combined(f"Encontrados {total} contatos para discar", "success")
+    update_gui_status_safe(gui, total=total, status="Pronto para discagem")
+    
+    return csv_manager, contatos
+
+def process_contacts(contatos, csv_manager, celular, gui):
+    sucesso_count = 0
+    falha_count = 0
+    
+    for i, contato in enumerate(contatos, 1):
+        if GUI_AVAILABLE:
+            while is_gui_paused() and not should_stop():
+                time_module.sleep(0.5)
+            if should_stop():
+                log_combined("Execução interrompida pelo usuário", "warning")
+                break
+
+        numero = contato["numero"]
+        nome = contato.get("nome", "Não informado")
+        data_nascimento = contato.get("data_nascimento", "Não informada")
+
+        log_combined(f"[{i}/{len(contatos)}] Processando: {nome}")
+        update_gui_status_safe(gui, processados=i-1, sucesso=sucesso_count, falha=falha_count,
+                               current=f"{nome} - {numero}", status="Discando...")
+
+        try:
+            resultado = discar_e_transferir(numero, nome, data_nascimento, celular, csv_manager)
+            if resultado == "ATENDEU":
+                sucesso_count += 1
+                log_combined(f"✅ {nome} ({data_nascimento}) - {numero} - ATENDEU", "success")
+            else:
+                falha_count += 1
+                log_combined(f"❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU", "warning")
+
+            update_gui_status_safe(gui, processados=i, sucesso=sucesso_count, falha=falha_count)
+            time_module.sleep(3)
+
+        except Exception as e:
+            falha_count += 1
+            log_combined(f"Erro ao processar {numero}: {e}", "error")
+            csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
+            update_gui_status_safe(gui, processados=i, falha=falha_count)
+            continue
+
+    return sucesso_count, falha_count
+
 
 def encontrar_arquivo_csv():
     """Encontra automaticamente o arquivo CSV na pasta contatos/"""
