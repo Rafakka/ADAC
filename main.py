@@ -1,33 +1,20 @@
-import subprocess
+
 import sys
-import threading
-import time as time_module  # Renomear para evitar conflito
+import time as time_module
 import logging
 import os
-import pygame
 
 os.environ['SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR'] = '0'
-os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
+os.environ['SDL_VIDEO_X11_SHM'] = '0'
 
-from csv_manager import CSVManager, encontrar_arquivo_csv, load_contacts, process_contacts
-from caller import discar_e_transferir
-from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
+from csv_manager import load_contacts, process_contacts
+from config import LOGS_DIR, GUI_ENABLED
 from logger import log_combined, mostrar_ajuda_erro, log_final_report
 from adb_manager import verificar_adb
-from hardware_manager import detectar_dispositivos, esperar_celular_conectar
+from hardware_manager import esperar_celular_conectar
 from gui_manager import init_gui_if_enabled, update_gui_status_safe, keep_gui_running
 
-# Configuração de GUI - usar variável global
-GUI_AVAILABLE = False
-if GUI_ENABLED:
-    try:
-        from gui_integrada import init_gui, log_message, update_gui_status, is_gui_paused, should_stop
-        GUI_AVAILABLE = True
-    except ImportError as e:
-        print(f"GUI não disponível: {e}")
-        GUI_AVAILABLE = False
-
-# Configuração de logging tradicional
+# Logging
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
 logging.basicConfig(
     level=logging.INFO,
@@ -40,26 +27,37 @@ logging.basicConfig(
 
 def main():
     gui, gui_thread = init_gui_if_enabled()
-    
     log_combined("=== ADAC - Auto Discador iniciado ===")
 
-    if not verificar_adb():
-        mostrar_ajuda_erro()
-        update_gui_status_safe(gui, status="Erro - ADB não disponível")
-        keep_gui_running(gui, gui_thread)
-        return
+    try:
+        # Verifica ADB
+        if not verificar_adb():
+            mostrar_ajuda_erro()
+            update_gui_status_safe(gui, status="Erro - ADB não disponível")
+            return
 
-    celular = esperar_celular_conectar(gui)
-    if not celular:
-        log_combined("Operação cancelada pelo usuário", "warning")
-        update_gui_status_safe(gui, status="Cancelado pelo usuário")
-        keep_gui_running(gui, gui_thread)
-        return
+        # Aguarda celular
+        dispositivo = esperar_celular_conectar(gui)
+        if not dispositivo:
+            log_combined("Operação cancelada pelo usuário", "warning")
+            update_gui_status_safe(gui, status="Cancelado pelo usuário")
+            return
 
-    csv_manager, contatos = load_contacts(gui)
-    sucesso, falha = process_contacts(contatos, csv_manager, celular, gui)
-    log_final_report(len(contatos), sucesso, falha)
-    keep_gui_running(gui, gui_thread)
+        # Carrega contatos
+        csv_manager, contatos = load_contacts(gui)
+
+        # Processa contatos
+        sucesso, falha = process_contacts(contatos, csv_manager, dispositivo, gui)
+
+        # Relatório final
+        log_final_report(len(contatos), sucesso, falha)
+
+    except Exception as e:
+        log_combined(f"Erro inesperado: {e}", "error")
+
+    finally:
+        # Mantém GUI aberta para decisão do usuário
+        keep_gui_running(gui, gui_thread)
 
 
 if __name__ == "__main__":
