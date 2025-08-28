@@ -40,24 +40,6 @@ logging.basicConfig(
     ]
 )
 
-def encontrar_arquivo_csv():
-    """Encontra automaticamente o arquivo CSV na pasta contatos/"""
-    try:
-        if os.path.exists(CSV_DEFAULT_PATH):
-            return CSV_DEFAULT_PATH
-            
-        for arquivo in os.listdir(CONTATOS_DIR):
-            if arquivo.lower().endswith('.csv'):
-                return os.path.join(CONTATOS_DIR, arquivo)
-            
-        log_combined("Nenhum arquivo CSV encontrado. Criando novo arquivo...", "warning")
-        return CSV_DEFAULT_PATH
-            
-    except Exception as e:
-        log_combined(f"Erro ao procurar arquivo CSV: {e}", "error")
-        return CSV_DEFAULT_PATH
-
-
 def main():
     global GUI_AVAILABLE
     
@@ -95,6 +77,7 @@ def main():
             sys.exit(1)
 
         devices = detectar_dispositivos()
+
         if not devices:
             log_combined("Nenhum celular detectado.", "error")
             if GUI_AVAILABLE:
@@ -107,28 +90,51 @@ def main():
         if GUI_AVAILABLE:
             update_gui_status(device=f"Conectado: {CELULAR}")
 
-        csv_path = encontrar_arquivo_csv()
-        log_combined(f"📋 Usando arquivo CSV: {csv_path}")
+        # ✅ CSVManager com novo comportamento
+        csv_manager = CSVManager()
+        csv_path = csv_manager.get_csv_path()
+        
+        # Verificar se o arquivo existe
+        if not csv_manager.arquivo_existente():
+            log_combined("❌ Nenhum arquivo CSV encontrado!", "error")
+            log_combined("", "warning")
+            log_combined("📋 SOLUÇÃO:", "header")
+            log_combined("1. Crie um arquivo CSV com os contatos", "warning")
+            log_combined("2. Coloque na pasta: contatos/", "warning")
+            log_combined("3. Formato: numero,nome,data_nascimento,status,...", "warning")
+            log_combined("4. Exemplo: 11999999999,João Silva,15/05/1990,PENDENTE", "warning")
+            log_combined("", "warning")
+            log_combined("💡 Pressione ESC para fechar e corrigir", "header")
+            
+            if GUI_AVAILABLE:
+                update_gui_status(
+                    status="Erro - CSV não encontrado",
+                    csv="Arquivo não encontrado",
+                    current="Aguardando correção"
+                )
+            return  # Para aqui, não tenta processar
+
+        log_combined(f"📋 Arquivo CSV encontrado: {csv_path}", "success")
         
         if GUI_AVAILABLE:
             update_gui_status(csv=f"Carregado: {os.path.basename(csv_path)}")
-
-        csv_manager = CSVManager([csv_path])
-        csv_manager.criar_csv_inicial()
         
+        # Ler contatos (agora só se arquivo existir)
         contatos = csv_manager.ler_contatos()
         total_contatos = len(contatos)
-        log_combined(f"Encontrados {total_contatos} contatos para discar", "success")
         
-        if GUI_AVAILABLE:
-            update_gui_status(
-                total=total_contatos,
-                status="Pronto para discagem"
-            )
-
-        if not contatos:
-            log_combined("Nenhum contato para processar. Adicione números no CSV.", "warning")
-            sys.exit(0)
+        if total_contatos == 0:
+            log_combined("ℹ️  Nenhum contato para processar no CSV.", "warning")
+            log_combined("💡 Adicione números no arquivo CSV", "warning")
+            
+            if GUI_AVAILABLE:
+                update_gui_status(
+                    status="Aguardando contatos",
+                    total=0,
+                    current="CSV vazio"
+                )
+        else:
+            log_combined(f"✅ Encontrados {total_contatos} contatos para discar", "success")
 
         sucesso_count = 0
         falha_count = 0
@@ -215,31 +221,41 @@ def main():
         log_combined("Execução interrompida pelo usuário", "warning")
         if GUI_AVAILABLE and gui:
             update_gui_status(status="Interrompido pelo usuário")
+            
     except Exception as e:
         log_combined(f"Erro fatal: {e}", "error")
         if GUI_AVAILABLE and gui:
             update_gui_status(status=f"Erro fatal: {str(e)}")
+            
     finally:
+        # SEMPRE manter a GUI aberta para decisão do usuário
         if GUI_AVAILABLE and gui:
-            print("🔧 Iniciando fechamento seguro...")
-            
-            gui.running = False
-            
-            wait_attempts = 0
-            while gui_thread and gui_thread.is_alive() and wait_attempts < 10:
-                time_module.sleep(0.1)
-                wait_attempts += 1
-            
-            if gui_thread and gui_thread.is_alive():
-                gui_thread.join(timeout=0.5)
+            log_combined("", "info")
+            log_combined("🎯 Pressione ESC para fechar o programa", "header")
+            log_combined("", "info")
             
             try:
-                if pygame.get_init():
-                    pygame.quit()
-                    print("✅ PyGame fechado com sucesso")
+                waiting = True
+                clock = pygame.time.Clock()
+                
+                while waiting and gui.running:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                            waiting = False
+                            gui.running = False
+                            log_combined("Aplicação encerrada", "success")
+                    
+                    if hasattr(gui, 'draw_interface'):
+                        gui.draw_interface()
+                    clock.tick(30)
+                    
             except Exception as e:
-                print(f"⚠️  Erro ao fechar PyGame: {e}")
-            print("✅ Fechamento concluído")
+                log_combined(f"Erro: {e}", "error")
+                time_module.sleep(3)
+            
+            gui.running = False
+            if gui_thread and gui_thread.is_alive():
+                gui_thread.join(timeout=2.0)
             
 if __name__ == "__main__":
     main()
