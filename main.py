@@ -90,10 +90,10 @@ def main():
         if GUI_AVAILABLE:
             update_gui_status(device=f"Conectado: {CELULAR}")
 
-        # ✅ CSVManager com novo comportamento
+        # CSVManager com novo comportamento
         csv_manager = CSVManager()
         csv_path = csv_manager.get_csv_path()
-        
+
         # Verificar se o arquivo existe
         if not csv_manager.arquivo_existente():
             log_combined("❌ Nenhum arquivo CSV encontrado!", "error")
@@ -112,27 +112,32 @@ def main():
                     csv="Arquivo não encontrado",
                     current="Aguardando correção"
                 )
-            return  # Para aqui, não tenta processar
-
-        log_combined(f"📋 Arquivo CSV encontrado: {csv_path}", "success")
-        
-        if GUI_AVAILABLE:
-            update_gui_status(csv=f"Carregado: {os.path.basename(csv_path)}")
-        
-        # Ler contatos (agora só se arquivo existir)
-        contatos = csv_manager.ler_contatos()
-        total_contatos = len(contatos)
-        
-        if total_contatos == 0:
-            log_combined("ℹ️  Nenhum contato para processar no CSV.", "warning")
-            log_combined("💡 Adicione números no arquivo CSV", "warning")
+        else:
+            log_combined(f"📋 Arquivo CSV encontrado: {csv_path}", "success")
             
             if GUI_AVAILABLE:
-                update_gui_status(
-                    status="Aguardando contatos",
-                    total=0,
-                    current="CSV vazio"
-                )
+                update_gui_status(csv=f"Carregado: {os.path.basename(csv_path)}")
+
+        # Ler contatos (tenta mesmo se arquivo não existir - retorna lista vazia)
+        contatos = csv_manager.ler_contatos()
+        total_contatos = len(contatos)
+
+        # Atualizar a barra de progresso independentemente
+        if GUI_AVAILABLE:
+            update_gui_status(
+                total=total_contatos,
+                processados=0,
+                sucesso=0,
+                falha=0,
+                status="Aguardando" if total_contatos == 0 else "Pronto para discagem"
+            )
+
+        if total_contatos == 0:
+            log_combined("ℹ️  Nenhum contato para processar.", "warning")
+            if not csv_manager.arquivo_existente():
+                log_combined("💡 Crie um arquivo CSV na pasta contatos/", "warning")
+            else:
+                log_combined("💡 Adicione números no arquivo CSV existente", "warning")
         else:
             log_combined(f"✅ Encontrados {total_contatos} contatos para discar", "success")
 
