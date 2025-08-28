@@ -230,51 +230,26 @@ def main():
     except Exception as e:
         log_combined(f"Erro fatal: {e}", "error")
         if GUI_AVAILABLE and gui:
-            update_gui_status(status=f"Erro fatal: {str(e)}")
-            
+            update_gui_status(status=f"Erro fatal: {str(e)}")   
     finally:
-    # SEMPRE manter a GUI aberta para decisão do usuário
         if GUI_AVAILABLE and gui:
-            log_combined("", "info")
-            log_combined("🎯 Pressione ESC para fechar o programa", "header")
-            log_combined("", "info")
-        try:
-            waiting = True
-            clock = pygame.time.Clock()
-            
-            while waiting and gui.running:
-                try:
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                            waiting = False
-                            gui.running = False
-                            log_combined("Aplicação encerrada", "success")
-                    
-                    if hasattr(gui, 'draw_interface'):
-                        gui.draw_interface()
-                    clock.tick(30)
-                    
-                except pygame.error as e:
-                    if "X Error" in str(e) or "MIT-SHM" in str(e):
-                        # Ignorar erros gráficos do X11
-                        continue
-                    else:
-                        raise
-                        
-        except Exception as e:
-            log_combined(f"Erro: {e}", "error")
-            time_module.sleep(3)
-        
-        finally:
-            # Fechamento seguro - não force pygame.quit() se já foi feito
-            gui.running = False
             try:
+                # Usar fechamento seguro
+                if hasattr(gui, 'safe_quit'):
+                    gui.safe_quit()
+                else:
+                    gui.running = False
+                
+                # Esperar um pouco
+                time_module.sleep(0.5)
+                
+                # Fazer join com timeout
                 if gui_thread and gui_thread.is_alive():
                     gui_thread.join(timeout=1.0)
-            except:
-                pass
-            
-            # Não chame pygame.quit() aqui - deixe a thread da GUI fazer isso
+                    
+            except Exception as e:
+                log_combined(f"Erro no fechamento: {e}", "error")
+                # Não fazer nada - o programa está terminando anyway
             
 if __name__ == "__main__":
     main()

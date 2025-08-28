@@ -276,93 +276,93 @@ class ADACGUI:
         if falha is not None: self.contatos_falha = falha
         if current: self.current_contact = current
     
-def draw_interface(self):
-    """Desenha a interface completa com scroll"""
-    self.screen.fill(self.colors['bg'])
-    
-    # Título
-    title = self.title_font.render("ADAC - AUTO DISCADOR", True, self.colors['header'])
-    self.screen.blit(title, (20, 15))
-    
-    # Painel de status principal - COM LARGURA FIXA
-    panel_width = self.width - 40
-    self.draw_panel(20, 60, panel_width, 120, "STATUS DO SISTEMA")
-    
-    status_texts = [
-        f"Status: {self.status}",
-        f"Dispositivo: {self.device_status}",
-        f"Arquivo CSV: {self.csv_status}",
-        f"Contato atual: {self.current_contact}"
-    ]
-    
-    for i, text in enumerate(status_texts):
-        # Cortar texto se for muito longo
-        if len(text) > 80:
-            text = text[:77] + "..."
-        text_surf = self.font_bold.render(text, True, self.colors['text'])
-        self.screen.blit(text_surf, (40, 85 + i * 20))
-    
-    # Painel de estatísticas - COM LARGURA CONTROLADA
-    stats_width = (self.width - 50) // 2
-    self.draw_panel(20, 200, stats_width, 100, "ESTATÍSTICAS")
-    
-    stats_texts = [
-        f"Total: {self.contatos_total}",
-        f"Processados: {self.contatos_processados}",
-        f"Sucesso: {self.contatos_sucesso}",
-        f"Falha: {self.contatos_falha}",
-        f"Taxa: {self.calculate_success_rate()}%"
-    ]
-    
-    for i, text in enumerate(stats_texts):
-        text_surf = self.font.render(text, True, self.colors['text'])
-        self.screen.blit(text_surf, (40, 225 + i * 18))
-    
-    # Painel de progresso
-    progress_width = (self.width - 50) // 2
-    self.draw_panel(stats_width + 30, 200, progress_width, 100, "PROGRESSO")
-    
-    if self.contatos_total > 0:
-        progresso = (self.contatos_processados / self.contatos_total) * 100
-        bar_max_width = progress_width - 100  # Largura máxima da barra
-        bar_width = max(10, min(bar_max_width, bar_max_width * (progresso / 100)))
+    def draw_interface(self):
+        """Desenha a interface completa com scroll"""
+        self.screen.fill(self.colors['bg'])
         
-        pygame.draw.rect(self.screen, self.colors['panel'], (stats_width + 50, 240, bar_max_width, 20), 0, 10)
-        pygame.draw.rect(self.screen, self.colors['success'], (stats_width + 50, 240, bar_width, 20), 0, 10)
+        # Título
+        title = self.title_font.render("ADAC - AUTO DISCADOR", True, self.colors['header'])
+        self.screen.blit(title, (20, 15))
         
-        progress_text = f"{progresso:.1f}% ({self.contatos_processados}/{self.contatos_total})"
-        text_surf = self.font.render(progress_text, True, self.colors['text'])
-        self.screen.blit(text_surf, (stats_width + 60, 243))
-    
-    # Área de logs
-    self.draw_panel(20, 320, self.width - 40, self.height - 370, "LOGS EM TEMPO REAL")
-    
-    # Logs com scroll - garantir que não ultrapassem a largura
-    y = 345
-    for text, color in self.lines:
-        # Cortar texto muito longo
-        if len(text) > 120:
-            text = text[:117] + "..."
-        text_surf = self.font.render(text, True, color)
-        self.screen.blit(text_surf, (40, y))
-        y += 18
-    
-    # Desenhar scrollbar se necessário
-    self._draw_scrollbar()
-    
-    # Rodapé com controles - texto cortado se necessário
-    controls = "F1 - Ajuda | Mouse Scroll - Navegar | ESC - Sair"
-    if self.paused:
-        controls += " | [PAUSADO]"
-    
-    if len(controls) > 100:
-        controls = controls[:97] + "..."
-    
-    control_text = self.small_font.render(controls, True, self.colors['text'])
-    self.screen.blit(control_text, (20, self.height - 25))
-    
-    pygame.display.flip()
-    
+        # Painel de status principal - COM LARGURA FIXA
+        panel_width = self.width - 40
+        self.draw_panel(20, 60, panel_width, 120, "STATUS DO SISTEMA")
+        
+        status_texts = [
+            f"Status: {self.status}",
+            f"Dispositivo: {self.device_status}",
+            f"Arquivo CSV: {self.csv_status}",
+            f"Contato atual: {self.current_contact}"
+        ]
+        
+        for i, text in enumerate(status_texts):
+            # Cortar texto se for muito longo
+            if len(text) > 80:
+                text = text[:77] + "..."
+            text_surf = self.font_bold.render(text, True, self.colors['text'])
+            self.screen.blit(text_surf, (40, 85 + i * 20))
+        
+        # Painel de estatísticas - COM LARGURA CONTROLADA
+        stats_width = (self.width - 50) // 2
+        self.draw_panel(20, 200, stats_width, 100, "ESTATÍSTICAS")
+        
+        stats_texts = [
+            f"Total: {self.contatos_total}",
+            f"Processados: {self.contatos_processados}",
+            f"Sucesso: {self.contatos_sucesso}",
+            f"Falha: {self.contatos_falha}",
+            f"Taxa: {self.calculate_success_rate()}%"
+        ]
+        
+        for i, text in enumerate(stats_texts):
+            text_surf = self.font.render(text, True, self.colors['text'])
+            self.screen.blit(text_surf, (40, 225 + i * 18))
+        
+        # Painel de progresso
+        progress_width = (self.width - 50) // 2
+        self.draw_panel(stats_width + 30, 200, progress_width, 100, "PROGRESSO")
+        
+        if self.contatos_total > 0:
+            progresso = (self.contatos_processados / self.contatos_total) * 100
+            bar_max_width = progress_width - 100  # Largura máxima da barra
+            bar_width = max(10, min(bar_max_width, bar_max_width * (progresso / 100)))
+            
+            pygame.draw.rect(self.screen, self.colors['panel'], (stats_width + 50, 240, bar_max_width, 20), 0, 10)
+            pygame.draw.rect(self.screen, self.colors['success'], (stats_width + 50, 240, bar_width, 20), 0, 10)
+            
+            progress_text = f"{progresso:.1f}% ({self.contatos_processados}/{self.contatos_total})"
+            text_surf = self.font.render(progress_text, True, self.colors['text'])
+            self.screen.blit(text_surf, (stats_width + 60, 243))
+        
+        # Área de logs
+        self.draw_panel(20, 320, self.width - 40, self.height - 370, "LOGS EM TEMPO REAL")
+        
+        # Logs com scroll - garantir que não ultrapassem a largura
+        y = 345
+        for text, color in self.lines:
+            # Cortar texto muito longo
+            if len(text) > 120:
+                text = text[:117] + "..."
+            text_surf = self.font.render(text, True, color)
+            self.screen.blit(text_surf, (40, y))
+            y += 18
+        
+        # Desenhar scrollbar se necessário
+        self._draw_scrollbar()
+        
+        # Rodapé com controles - texto cortado se necessário
+        controls = "F1 - Ajuda | Mouse Scroll - Navegar | ESC - Sair"
+        if self.paused:
+            controls += " | [PAUSADO]"
+        
+        if len(controls) > 100:
+            controls = controls[:97] + "..."
+        
+        control_text = self.small_font.render(controls, True, self.colors['text'])
+        self.screen.blit(control_text, (20, self.height - 25))
+        
+        pygame.display.flip()
+        
     def draw_panel(self, x, y, width, height, title):
         """Desenha um painel com título"""
         pygame.draw.rect(self.screen, self.colors['panel'], (x, y, width, height), 0, 8)
@@ -542,3 +542,8 @@ def should_stop():
     """Verifica se deve parar execução"""
     global gui_instance
     return gui_instance and not gui_instance.running
+
+def safe_quit(self):
+    """Fechamento seguro que evita segmentation fault"""
+    self.running = False
+    # Não chame pygame.quit() aqui - deixe o PyGame lidar com isso
