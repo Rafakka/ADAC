@@ -3,6 +3,7 @@ import sys
 import os
 from datetime import datetime
 import time
+import logging
 
 class ADACGUI:
     def __init__(self):
@@ -10,6 +11,7 @@ class ADACGUI:
         self.width = 1000
         self.height = 800
         self.screen = pygame.display.set_mode((self.width, self.height))
+        self._log_buffer = []
         pygame.display.set_caption("ADAC - Auto Discador")
         
         # Cores (valores RGB)
@@ -72,10 +74,12 @@ class ADACGUI:
             color_val = self.colors['error']
             timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] ❌ {text}"
+            logging.error(text)    
         elif level == "warning":
             color_val = self.colors['warning']
             timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] ⚠️  {text}"
+            logging.warning(text)
         elif level == "success":
             color_val = self.colors['success']
             timestamp = datetime.now().strftime("%H:%M:%S")
@@ -86,10 +90,10 @@ class ADACGUI:
                 color_val = self.colors[color_name]
             else:
                 color_val = self.colors['text']
+                logging.info(text)
             
             timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] 🔹 {text}"
-        
         self.all_lines.append((formatted_text, color_val))
         self._update_visible_lines()
     
@@ -422,6 +426,14 @@ class ADACGUI:
         pygame.quit()
         return True
 
+    def log_message(message, level="info"):
+        global gui_instance
+        if gui_instance:
+            try:
+                gui_instance.add_line(message, level=level)
+            except Exception as e:
+                logging.error(f"Erro ao logar na GUI: {e}")
+                
     def keep_alive_until_escape(self, message="Processamento concluído"):
         """Mantém a janela aberta até o usuário pressionar ESC"""
         self.add_line("")

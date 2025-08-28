@@ -12,18 +12,22 @@ os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
 from csv_manager import CSVManager
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
-from logger_manager import log_combined
+from logger_manager import log_combined, init_gui_logger, setup_logging
 from hardware_manager import verificar_adb, detectar_dispositivos
 
-# Configuração de GUI - usar variável global
+logger = setup_logging()
+
 GUI_AVAILABLE = False
 if GUI_ENABLED:
     try:
-        from gui_integrada import init_gui, log_message, update_gui_status, is_gui_paused, should_stop
+        from gui_integrada import init_gui, update_gui_status, is_gui_paused, should_stop
         GUI_AVAILABLE = True
     except ImportError as e:
-        print(f"GUI não disponível: {e}")
+        log_combined(f"GUI não disponível: {e}", "error")
         GUI_AVAILABLE = False
+
+# Inicializar logger com status da GUI
+init_gui_logger(GUI_AVAILABLE)
 
 # Configuração de logging tradicional
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
@@ -68,11 +72,13 @@ def main():
                 gui_thread = threading.Thread(target=gui.run)
                 gui_thread.daemon = True
                 gui_thread.start()
-                time_module.sleep(1)  # Usar time_module em vez de time
+                time_module.sleep(1)
                 log_combined("Interface gráfica inicializada", "success")
         except Exception as e:
             log_combined(f"Erro ao inicializar GUI: {e}", "error")
             GUI_AVAILABLE = False
+            # Atualizar logger com novo status
+            init_gui_logger(False)
 
     try:
         log_combined("=== ADAC - Auto Discador iniciado ===")
