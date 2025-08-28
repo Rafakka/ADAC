@@ -22,7 +22,9 @@ class ADACGUI:
             'header': (100, 200, 255),
             'border': (0, 80, 160),
             'panel': (20, 40, 60),
-            'highlight': (0, 120, 240)
+            'highlight': (0, 120, 240),
+            'scrollbar': (100, 100, 100),
+            'scrollbar_active': (150, 150, 150)
         }
         
         # Fontes
@@ -33,7 +35,11 @@ class ADACGUI:
         
         # Estado do sistema
         self.lines = []
-        self.max_lines = 25
+        self.all_lines = []  # Todas as linhas (para scroll)
+        self.max_visible_lines = 20  # Linhas visíveis na tela
+        self.scroll_offset = 0  # Offset do scroll
+        self.scrollbar_dragging = False
+        
         self.status = "Inicializando..."
         self.device_status = "Não conectado"
         self.csv_status = "Não carregado"
@@ -42,7 +48,7 @@ class ADACGUI:
         self.contatos_sucesso = 0
         self.contatos_falha = 0
         self.current_contact = "Nenhum"
-        
+
         # Controles
         self.running = True
         self.paused = False
@@ -84,9 +90,174 @@ class ADACGUI:
             timestamp = datetime.now().strftime("%H:%M:%S")
             formatted_text = f"[{timestamp}] 🔹 {text}"
         
-        self.lines.append((formatted_text, color_val))
-        if len(self.lines) > self.max_lines:
-            self.lines = self.lines[-self.max_lines:]
+        self.all_lines.append((formatted_text, color_val))
+        self._update_visible_lines()
+    
+    def _update_visible_lines(self):
+        """Atualiza as linhas visíveis baseadas no scroll offset"""
+        start_idx = max(0, len(self.all_lines) - self.max_visible_lines - self.scroll_offset)
+        end_idx = len(self.all_lines) - self.scroll_offset
+        self.lines = self.all_lines[start_idx:end_idx]
+    
+    def handle_scroll(self, event):
+        """Manipula eventos de scroll do mouse"""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:  # Scroll up
+                self.scroll_offset = max(0, self.scroll_offset - 3)
+            elif event.button == 5:  # Scroll down
+                max_scroll = max(0, len(self.all_lines) - self.max_visible_lines)
+                self.scroll_offset = min(max_scroll, self.scroll_offset + 3)
+            elif event.button == 1:  # Botão esquerdo - arrastar scrollbar
+                scrollbar_rect = self._get_scrollbar_rect()
+                if scrollbar_rect.collidepoint(event.pos):
+                    self.scrollbar_dragging = True
+        
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
+                self.scrollbar_dragging = False
+        
+        elif event.type == pygame.MOUSEMOTION and self.scrollbar_dragging:
+            self._handle_scrollbar_drag(event)
+        
+        self._update_visible_lines()
+    
+    def _get_scrollbar_rect(self):
+        """Retorna o retângulo da scrollbar"""
+        if len(self.all_lines) <= self.max_visible_lines:
+            return None
+        
+        total_lines = len(self.all_lines)
+        visible_ratio = self.max_visible_lines / total_lines
+        scrollbar_height = int((self.height - 370) * visible_ratio)
+        
+        scrollable_lines = total_lines - self.max_visible_lines
+        scroll_pos_ratio = self.scroll_offset / scrollable_lines if scrollable_lines > 0 else 0
+        
+        scrollbar_y = 320 + int((self.height - 370 - scrollbar_height) * scroll_pos_ratio)
+        
+        return pygame.Rect(self.width - 20, scrollbar_y, 10, scrollbar_height)
+    
+    def _handle_scrollbar_drag(self, event):
+        """Manipula arraste da scrollbar"""
+        if len(self.all_lines) <= self.max_visible_lines:
+            return
+        
+        total_lines = len(self.all_lines)
+        scrollable_lines = total_lines - self.max_visible_lines
+        
+        # Calcular posição baseada no mouse
+        mouse_y_relative = event.pos[1] - 320
+        total_scroll_area = self.height - 370
+        scroll_ratio = max(0, min(1, mouse_y_relative / total_scroll_area))
+        
+        self.scroll_offset = int(scrollable_lines * scroll_ratio)
+    
+    def draw_interface(self):
+        """Desenha a interface completa com scroll"""
+        self.screen.fill(self.colors['bg'])
+        
+        # Título
+        title = self.title_font.render("ADAC - AUTO DISCADOR", True, self.colors['header'])
+        self.screen.blit(title, (20, 15))
+        
+        # Painel de status principal
+        self.draw_panel(20, 60, self.width - 40, 120, "STATUS DO SISTEMA")
+        
+        status_texts = [
+            f"Status: {self.status}",
+            f"Dispositivo: {self.device_status}",
+            f"Arquivo CSV: {self.csv_status}",
+            f"Contato atual: {self.current_contact}"
+        ]
+        
+        for i, text in enumerate(status_texts):
+            text_surf = self.font_bold.render(text, True, self.colors['text'])
+            self.screen.blit(text_surf, (40, 85 + i * 20))
+        
+        # Painel de estatísticas
+        self.draw_panel(20, 200, (self.width - 50) // 2, 100, "ESTATÍSTICAS")
+        
+        stats_texts = [
+            f"Total: {self.contatos_total} contatos",
+            f"Processados: {self.contatos_processados}",
+            f"Sucesso: {self.contatos_sucesso}",
+            f"Falha: {self.contatos_falha}",
+            f"Taxa: {self.calculate_success_rate()}%"
+        ]
+        
+        for i, text in enumerate(stats_texts):
+            text_surf = self.font.render(text, True, self.colors['text'])
+            self.screen.blit(text_surf, (40, 225 + i * 18))
+        
+        # Painel de progresso
+        self.draw_panel((self.width - 50) // 2 + 30, 200, (self.width - 50) // 2, 100, "PROGRESSO")
+        
+        if self.contatos_total > 0:
+            progresso = (self.contatos_processados / self.contatos_total) * 100
+            bar_width = ((self.width - 150) // 2) * (progresso / 100)
+            pygame.draw.rect(self.screen, self.colors['panel'], ((self.width - 50) // 2 + 50, 240, (self.width - 150) // 2, 20), 0, 10)
+            pygame.draw.rect(self.screen, self.colors['success'], ((self.width - 50) // 2 + 50, 240, bar_width, 20), 0, 10)
+            
+            progress_text = f"{progresso:.1f}% ({self.contatos_processados}/{self.contatos_total})"
+            text_surf = self.font.render(progress_text, True, self.colors['text'])
+            self.screen.blit(text_surf, ((self.width - 50) // 2 + 50 + 10, 243))
+        
+        # Área de logs
+        self.draw_panel(20, 320, self.width - 40, self.height - 370, "LOGS EM TEMPO REAL")
+        
+        # Logs com scroll
+        y = 345
+        for text, color in self.lines:
+            text_surf = self.font.render(text, True, color)
+            self.screen.blit(text_surf, (40, y))
+            y += 18
+        
+        # Desenhar scrollbar se necessário
+        self._draw_scrollbar()
+        
+        # Rodapé com controles
+        controls = "F1 - Ajuda | Mouse Scroll - Navegar | ESC - Sair"
+        if self.paused:
+            controls += " | [PAUSADO]"
+        
+        control_text = self.small_font.render(controls, True, self.colors['text'])
+        self.screen.blit(control_text, (20, self.height - 25))
+        
+        pygame.display.flip()
+    
+    def _draw_scrollbar(self):
+        """Desenha a scrollbar"""
+        if len(self.all_lines) <= self.max_visible_lines:
+            return
+        
+        scrollbar_rect = self._get_scrollbar_rect()
+        if scrollbar_rect:
+            pygame.draw.rect(self.screen, self.colors['scrollbar_active'] if self.scrollbar_dragging else self.colors['scrollbar'], scrollbar_rect, 0, 3)
+    
+    def handle_events(self):
+        """Processa eventos da interface incluindo scroll"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+                return False
+            
+            elif event.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION):
+                self.handle_scroll(event)
+            
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                    return False
+                
+                elif event.key == pygame.K_F1:
+                    self.show_help()
+                
+                elif event.key == pygame.K_SPACE:
+                    self.paused = not self.paused
+                    status = "PAUSADO" if self.paused else "EXECUTANDO"
+                    self.add_line(f"Discagem {status}", "warning" if self.paused else "success")
+        
+        return True
     
     def update_status(self, status=None, device=None, csv=None, 
                      total=None, processados=None, sucesso=None, falha=None,
