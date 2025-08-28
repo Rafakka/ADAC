@@ -1,18 +1,18 @@
 
 import sys
-import time as time_module
 import logging
 import os
 
 os.environ['SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR'] = '0'
 os.environ['SDL_VIDEO_X11_SHM'] = '0'
 
-from csv_manager import load_contacts, process_contacts
-from config import LOGS_DIR, GUI_ENABLED
+from config import LOGS_DIR
 from logger import log_combined, mostrar_ajuda_erro, log_final_report
 from adb_manager import verificar_adb
 from hardware_manager import esperar_celular_conectar
 from gui_manager import init_gui_if_enabled, update_gui_status_safe, keep_gui_running
+from csv_manager import CSVManager, load_contacts, process_contacts
+from caller import discar_e_transferir
 
 # Logging
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')

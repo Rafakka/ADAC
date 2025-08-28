@@ -1,8 +1,5 @@
 import threading
 import pygame
-import sys
-import os
-import logging
 import time as time_module 
 from datetime import datetime
 from config import CONTATOS_DIR, LOGS_DIR

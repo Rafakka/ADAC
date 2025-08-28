@@ -1,6 +1,5 @@
 import pygame
 import sys
-import os
 from datetime import datetime
 
 class CLIGUI:

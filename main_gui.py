@@ -4,8 +4,6 @@ Main com GUI no thread principal
 """
 
 import pygame
-import sys
-import os
 import time
 import threading
 from datetime import datetime
