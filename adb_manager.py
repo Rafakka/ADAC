@@ -1,7 +1,7 @@
 import subprocess
 import logging
 from config import ADB_PATH
-from gui_manager import GUI_AVAILABLE
+from gui_manager import gui_instance
 
 def verificar_adb():
     """Verifica se ADB está acessível"""
