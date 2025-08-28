@@ -2,6 +2,7 @@ import csv
 import os
 from datetime import datetime
 from config import CONTATOS_DIR, CSV_DEFAULT_PATH
+from logger_manager import log_combined
 
 class CSVManager:
     def __init__(self, args=None):
