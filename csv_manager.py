@@ -2,6 +2,25 @@ import csv
 import os
 from datetime import datetime
 from config import CONTATOS_DIR, CSV_DEFAULT_PATH
+from logger import log_combined
+
+def encontrar_arquivo_csv():
+    """Encontra automaticamente o arquivo CSV na pasta contatos/"""
+    try:
+        if os.path.exists(CSV_DEFAULT_PATH):
+            return CSV_DEFAULT_PATH
+        
+        for arquivo in os.listdir(CONTATOS_DIR):
+            if arquivo.lower().endswith('.csv'):
+                return os.path.join(CONTATOS_DIR, arquivo)
+        
+        log_combined("Nenhum arquivo CSV encontrado. Criando novo arquivo...", "warning")
+        return CSV_DEFAULT_PATH
+        
+    except Exception as e:
+        log_combined(f"Erro ao procurar arquivo CSV: {e}", "error")
+        return CSV_DEFAULT_PATH
+    
 
 class CSVManager:
     def __init__(self, args=None):

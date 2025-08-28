@@ -9,9 +9,12 @@ import pygame
 os.environ['SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR'] = '0'
 os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
 
-from csv_manager import CSVManager
+from csv_manager import CSVManager, encontrar_arquivo_csv
 from caller import discar_e_transferir
 from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
+from logger import log_combined, mostrar_ajuda_erro
+from adb_manager import verificar_adb
+from hardware_manager import detectar_dispositivos, esperar_celular_conectar
 
 # Configuração de GUI - usar variável global
 GUI_AVAILABLE = False
@@ -33,133 +36,6 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
-
-def log_combined(message, level="info"):
-    """Log para ambos GUI e console"""
-    global GUI_AVAILABLE
-    if GUI_AVAILABLE:
-        log_message(message, level)
-    
-    if level == "error":
-        logging.error(message)
-    elif level == "warning":
-        logging.warning(message)
-    else:
-        logging.info(message)
-
-def mostrar_ajuda_erro():
-    """Mostra ajuda quando ocorre erro"""
-    log_combined("", "warning")
-    log_combined("🔧 SOLUÇÃO DE PROBLEMAS:", "header")
-    log_combined("1. 📱 Conecte o celular via USB", "warning")
-    log_combined("2. ⚙️  Ative a depuração USB (Opções do desenvolvedor)", "warning") 
-    log_combined("3. ✅ Autorize o computador no popup do celular", "warning")
-    log_combined("4. 🔄 Execute: adb devices para testar", "warning")
-    log_combined("5. 🚫 Pressione ESC para cancelar", "warning")
-    log_combined("", "warning")
-
-def verificar_adb():
-    """Verifica se o ADB está funcionando - NÃO USA sys.exit()"""
-    try:
-        result = subprocess.run([ADB_PATH, "version"], capture_output=True, text=True, timeout=10)
-        if result.returncode != 0:
-            log_combined("ADB não está funcionando corretamente", "error")
-            return False
-        log_combined(f"ADB encontrado: {result.stdout.splitlines()[0]}", "success")
-        return True
-    except Exception as e:
-        log_combined(f"Erro ao verificar ADB: {e}", "error")
-        return False  # Retorna False, não sai do programa
-
-if not verificar_adb():
-    log_combined("ADB não disponível.", "error")
-    mostrar_ajuda_erro()  # 👈 Mostra ajuda
-    if GUI_AVAILABLE:
-        update_gui_status(status="Erro - ADB não disponível")
-    execution_successful = False
-
-def detectar_dispositivos():
-    """Detecta dispositivos Android - NÃO USA sys.exit()"""
-    try:
-        result = subprocess.run([ADB_PATH, "devices", "-l"], capture_output=True, text=True, timeout=30)
-        devices = []
-        
-        for line in result.stdout.splitlines():
-            if "device usb:" in line:
-                device_id = line.split()[0]
-                devices.append(device_id)
-                log_combined(f"Dispositivo detectado: {line}", "success")
-        
-        return devices if devices else None
-        
-    except Exception as e:
-        log_combined(f"Erro ao detectar dispositivos: {e}", "error")
-        return None  # Retorna None, não sai do programa
-
-def encontrar_arquivo_csv():
-    """Encontra automaticamente o arquivo CSV na pasta contatos/"""
-    try:
-        if os.path.exists(CSV_DEFAULT_PATH):
-            return CSV_DEFAULT_PATH
-        
-        for arquivo in os.listdir(CONTATOS_DIR):
-            if arquivo.lower().endswith('.csv'):
-                return os.path.join(CONTATOS_DIR, arquivo)
-        
-        log_combined("Nenhum arquivo CSV encontrado. Criando novo arquivo...", "warning")
-        return CSV_DEFAULT_PATH
-        
-    except Exception as e:
-        log_combined(f"Erro ao procurar arquivo CSV: {e}", "error")
-        return CSV_DEFAULT_PATH
-    
-def esperar_celular_conectar(gui=None):
-    """Aguarda até que um celular seja conectado ou ESC seja pressionado"""
-    global GUI_AVAILABLE
-    
-    log_combined("🔍 Aguardando conexão do celular...", "warning")
-    log_combined("💡 Conecte o celular via USB e ative a depuração USB", "warning")
-    
-    if GUI_AVAILABLE and gui:
-        update_gui_status(
-            status="Aguardando celular",
-            device="Não conectado",
-            current="Conecte o celular e ative depuração USB"
-        )
-    
-    # Configurar pygame para detectar ESC
-    try:
-        import pygame
-        clock = pygame.time.Clock()
-        waiting = True
-        
-        while waiting:
-            # Verificar se celular foi conectado
-            devices = detectar_dispositivos()
-            if devices:
-                log_combined(f"✅ Celular detectado: {devices[0]}", "success")
-                return devices[0]  # Retorna o ID do dispositivo
-            
-            # Verificar se usuário pressionou ESC
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    log_combined("Operação cancelada pelo usuário", "warning")
-                    return None
-            
-            # Atualizar interface
-            if GUI_AVAILABLE and gui and hasattr(gui, 'draw_interface'):
-                gui.draw_interface()
-            
-            # Mensagem de waiting a cada 5 segundos
-            if int(time_module.time()) % 5 == 0:
-                log_combined("⏳ Aguardando conexão do celular...", "warning")
-            
-            clock.tick(1)  # Verificar a cada segundo
-            
-    except Exception as e:
-        log_combined(f"Erro ao aguardar celular: {e}", "error")
-        return None
-
 
 def main():
     global GUI_AVAILABLE
