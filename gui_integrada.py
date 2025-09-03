@@ -1,8 +1,5 @@
 import pygame
-import sys
-import os
 from datetime import datetime
-import time
 import logging
 
 class ADACGUI:

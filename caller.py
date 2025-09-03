@@ -2,8 +2,7 @@ import subprocess
 import time
 import logging
 import os
-from config import ADB_PATH, TEMPO_DISCAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO
-from csv_manager import CSVManager
+from config import ADB_PATH, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO
 
 def executar_comando_adb(comando, device_serial=None):
     """Executa comando ADB com tratamento de erro"""
