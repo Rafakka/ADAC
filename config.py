@@ -31,7 +31,7 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "config.txt")
 
 # Configurações padrão
 NUMERO_REDIRECIONAMENTO = "11999999999"  # Número padrão para transferência
-TEMPO_DISCAGEM = 8
+TEMPO_DISCAGEM = 12
 TEMPO_TRANSFERENCIA = 12
 
 # Carregar configurações do arquivo
