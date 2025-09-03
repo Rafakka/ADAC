@@ -1,17 +1,15 @@
-import subprocess
 import sys
 import threading
-import time as time_module  # Renomear para evitar conflito
+import time as time_module
 import logging
 import os
-import pygame
 
 os.environ['SDL_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR'] = '0'
-os.environ['SDL_VIDEO_X11_SHM'] = '0'  # Desativa shared memory
+os.environ['SDL_VIDEO_X11_SHM'] = '0'
 
 from csv_manager import CSVManager
 from caller import discar_e_transferir
-from config import ADB_PATH, CONTATOS_DIR, LOGS_DIR, CSV_DEFAULT_PATH, GUI_ENABLED
+from config import CONTATOS_DIR, LOGS_DIR, GUI_ENABLED
 from logger_manager import log_combined, init_gui_logger, setup_logging
 from hardware_manager import verificar_adb, detectar_dispositivos
 
@@ -147,7 +145,7 @@ def main():
         for i, contato in enumerate(contatos, 1):
             if GUI_AVAILABLE:
                 while is_gui_paused() and not should_stop():
-                    time_module.sleep(0.5)  # Usar time_module
+                    time_module.sleep(0.5)
                 
                 if should_stop():
                     log_combined("Execução interrompida pelo usuário", "warning")
@@ -191,7 +189,7 @@ def main():
                         falha=falha_count
                     )
                 
-                time_module.sleep(3)  # Usar time_module
+                time_module.sleep(3)
                 
             except Exception as e:
                 falha_count += 1
@@ -249,7 +247,7 @@ def main():
                     
             except Exception as e:
                 log_combined(f"Erro no fechamento: {e}", "error")
-                # Não fazer nada - o programa está terminando anyway
+                
             
 if __name__ == "__main__":
     main()

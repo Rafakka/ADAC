@@ -1,6 +1,6 @@
 import logging
 import os
-from config import LOGS_DIR, GUI_ENABLED
+from config import LOGS_DIR
 
 # Configuração do logger
 log_file = os.path.join(LOGS_DIR, 'adac_log.txt')
