@@ -4,8 +4,6 @@ Teste rápido da interface gráfica
 """
 
 import pygame
-import sys
-import os
 from datetime import datetime
 
 # Configuração básica do PyGame
