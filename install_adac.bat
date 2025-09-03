@@ -29,6 +29,12 @@ if errorlevel 1 (
 )
 
 echo.
+echo 📦 Instalando dependências Python...
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+echo ✅ Dependências instaladas!
+
+echo.
 echo ========================================
 echo    INSTALADOR DE DRIVERS ADB - WINDOWS
 echo ========================================
