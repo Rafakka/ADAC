@@ -1,79 +1,101 @@
 @echo off
 chcp 65001 > nul
-echo.
-echo 🎯 ADAC - Instalador para Windows
-echo =================================
-echo ⚠️  EXECUTE COMO ADMINISTRADOR
-echo    (Botão direito -> Executar como administrador)
-echo.
+setlocal
 
-REM Verificar se é administrador
-net session >nul 2>&1
-if %errorLevel% neq 0 (
-    echo ❌ Execute como Administrador!
-    echo.
+REM ---------------------------
+REM Configurações de caminho
+REM ---------------------------
+set ROOT_DIR=%~dp0
+set PYTHON_PATH=%ROOT_DIR%python\python.exe
+set PIP_PATH=%ROOT_DIR%python\Scripts\pip.exe
+set ADB_PATH=%ROOT_DIR%adb\Win\adb.exe
+set REQ_FILE=%ROOT_DIR%requirements.txt
+
+echo.
+echo ADAC - Instalador e Inicializador
+echo ================================
+
+REM ---------------------------
+REM Verifica Python embutido
+REM ---------------------------
+if exist "%PYTHON_PATH%" (
+    echo Python encontrado: %PYTHON_PATH%
+) else (
+    echo Python nao encontrado em python\python.exe
+    echo Instale a versão full dentro da pasta python\
     pause
     exit /b 1
 )
 
-REM Verificar e instalar Python
-python --version >nul 2>&1
+REM ---------------------------
+REM Checa pip, setuptools e wheel
+REM ---------------------------
+"%PYTHON_PATH%" -m pip --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python não encontrado
-    echo 📥 Baixando instalador do Python...
-    powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe' -OutFile 'python_installer.exe'"
-    echo 🛠️  Instalando Python...
-    start /wait python_installer.exe /quiet InstallAllUsers=1 PrependPath=1
-    del python_installer.exe
-    echo ✅ Python instalado!
+    echo Pip nao encontrado, instalando via get-pip.py...
+    if exist "%ROOT_DIR%get-pip.py" (
+        "%PYTHON_PATH%" "%ROOT_DIR%get-pip.py"
+    ) else (
+        echo Arquivo get-pip.py nao encontrado no root
+        pause
+        exit /b 1
+    )
 )
 
-echo.
-echo 📦 Instalando dependências Python...
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-echo ✅ Dependências instaladas!
+"%PYTHON_PATH%" -m pip install --upgrade pip setuptools wheel
 
-echo.
-echo ========================================
-echo    INSTALADOR DE DRIVERS ADB - WINDOWS
-echo ========================================
-echo.
-echo 📥 Instalando drivers ADB...
-echo.
+REM ---------------------------
+REM Instala dependencias
+REM ---------------------------
+echo Instalando dependencias do requirements.txt...
+"%PYTHON_PATH%" -m pip install -r "%REQ_FILE%"
+if errorlevel 1 (
+    echo Falha ao instalar dependencias via pip. Tentando instalar pygame via .whl local...
+    if exist "%ROOT_DIR%python\whl\pygame*.whl" (
+        "%PYTHON_PATH%" -m pip install "%ROOT_DIR%python\whl\pygame*.whl"
+    ) else (
+        echo Arquivo .whl do pygame nao encontrado.
+        pause
+        exit /b 1
+    )
+)
 
-if exist "adb\Win\adb.exe" (
-    echo 🔧 Instalando drivers do projeto...
-    adb\Win\adb.exe devices
+REM ---------------------------
+REM Checa ADB
+REM ---------------------------
+if exist "%ADB_PATH%" (
+    echo ADB encontrado: %ADB_PATH%
+    echo Testando conexao ADB...
+    "%ADB_PATH%" devices
 ) else (
-    echo 💡 Baixando Platform Tools...
-    echo 📥 Download: https://developer.android.com/studio/releases/platform-tools
-    start "" "https://developer.android.com/studio/releases/platform-tools"
+    echo ADB nao encontrado em adb\Win\adb.exe
+    echo Baixe o Platform Tools e coloque em adb\Win
+    pause
+    exit /b 1
 )
 
-echo.
-echo ✅ Drivers ADB instalados/verificados
-echo 💡 Reconecte o dispositivo USB se necessário
-echo.
+REM ---------------------------
+REM Criar pastas default se nao existirem
+REM ---------------------------
+if not exist "%ROOT_DIR%contatos" mkdir "%ROOT_DIR%contatos"
+if not exist "%ROOT_DIR%logs" mkdir "%ROOT_DIR%logs"
+if not exist "%ROOT_DIR%config" mkdir "%ROOT_DIR%config"
 
-REM Criar pastas
-if not exist "contatos" mkdir contatos
-if not exist "logs" mkdir logs
-if not exist "config" mkdir config
-
-REM Criar arquivos padrão
-if not exist "contatos\contatos.csv" (
-    echo numero,nome,data_nascimento,status,data_processamento,tentativas > contatos\contatos.csv
-    echo 11999999999,Exemplo Silva,01/01/1990,PENDENTE,,0 >> contatos\contatos.csv
+REM Arquivos default
+if not exist "%ROOT_DIR%contatos\contatos.csv" (
+    echo numero,nome,data_nascimento,status,data_processamento,tentativas> "%ROOT_DIR%contatos\contatos.csv"
+    echo 11999999999,Exemplo Silva,01/01/1990,PENDENTE,,0>> "%ROOT_DIR%contatos\contatos.csv"
+)
+if not exist "%ROOT_DIR%config\config.txt" (
+    echo numero_redirecionamento=11999999999> "%ROOT_DIR%config\config.txt"
+    echo tempo_discagem=8>> "%ROOT_DIR%config\config.txt"
+    echo tempo_transferencia=12>> "%ROOT_DIR%config\config.txt"
 )
 
-if not exist "config\config.txt" (
-    echo numero_redirecionamento=11999999999 > config\config.txt
-    echo tempo_discagem=8 >> config\config.txt
-    echo tempo_transferencia=12 >> config\config.txt
-)
-
-echo ✅ Instalação concluída!
-echo 🚀 Execute run_adac.bat para iniciar
+REM ---------------------------
+REM Tudo instalado
+REM ---------------------------
 echo.
+
 pause
+endlocal

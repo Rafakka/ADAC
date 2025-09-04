@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
-        "./utilidades/test_"
-    ]
+        "./utilidades/test_",
+        "./python/Lib/site-packages/pygame/__pyinstaller/hook-"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
 }

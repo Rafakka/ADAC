@@ -1,0 +1,327 @@
+2025-09-04 10:30:00,412 - GUI não disponível: No module named 'pygame'
+2025-09-04 10:30:00,413 - === ADAC - Auto Discador iniciado ===
+2025-09-04 10:30:00,414 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 10:30:00,414 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 10:30:00,459 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 10:30:00,506 - Nenhum celular detectado.
+2025-09-04 11:18:23,404 - GUI não disponível: No module named 'pygame'
+2025-09-04 11:18:23,404 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:18:23,405 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:18:23,405 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:18:23,583 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 11:18:23,629 - Nenhum celular detectado.
+2025-09-04 11:41:28,997 -  Iniciado em: 04/09/2025 11:41:28
+2025-09-04 11:41:28,998 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 11:41:28,998 - 
+2025-09-04 11:41:30,006 - Interface gráfica inicializada
+2025-09-04 11:41:30,007 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:41:30,010 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:41:30,012 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:41:30,014 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:41:30,016 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:41:30,027 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:41:30,091 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 11:41:30,137 - Nenhum celular detectado.
+2025-09-04 11:41:30,137 - Nenhum celular detectado.
+2025-09-04 11:42:49,652 -  Iniciado em: 04/09/2025 11:42:49
+2025-09-04 11:42:49,652 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 11:42:49,653 - 
+2025-09-04 11:42:50,661 - Interface gráfica inicializada
+2025-09-04 11:42:50,661 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:42:50,664 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:42:50,664 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:42:50,665 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:42:50,666 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:42:50,667 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:42:50,712 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 11:42:50,759 - Nenhum celular detectado.
+2025-09-04 11:42:50,759 - Nenhum celular detectado.
+2025-09-04 11:57:42,377 -  Iniciado em: 04/09/2025 11:57:42
+2025-09-04 11:57:42,377 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 11:57:42,378 - 
+2025-09-04 11:57:43,387 - Interface gráfica inicializada
+2025-09-04 11:57:43,388 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:57:43,388 - === ADAC - Auto Discador iniciado ===
+2025-09-04 11:57:43,388 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:57:43,388 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 11:57:43,389 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:57:43,389 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 11:57:43,481 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 11:57:43,538 - Nenhum celular detectado.
+2025-09-04 11:57:43,538 - Nenhum celular detectado.
+2025-09-04 12:09:51,978 -  Iniciado em: 04/09/2025 12:09:51
+2025-09-04 12:09:51,978 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:09:51,979 - 
+2025-09-04 12:09:52,987 - Interface gráfica inicializada
+2025-09-04 12:09:52,987 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:09:52,988 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:09:52,989 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:09:52,990 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:09:52,990 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:09:52,991 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:09:53,039 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:09:53,089 - Nenhum celular detectado.
+2025-09-04 12:09:53,089 - Nenhum celular detectado.
+2025-09-04 12:11:07,516 -  Iniciado em: 04/09/2025 12:11:07
+2025-09-04 12:11:07,517 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:11:07,518 - 
+2025-09-04 12:11:08,532 - Interface gráfica inicializada
+2025-09-04 12:11:08,533 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:11:08,540 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:11:08,541 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:11:08,543 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:11:08,545 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:11:08,546 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:11:08,601 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:11:08,647 - Nenhum celular detectado.
+2025-09-04 12:11:08,648 - Nenhum celular detectado.
+2025-09-04 12:16:42,050 -  Iniciado em: 04/09/2025 12:16:42
+2025-09-04 12:16:42,050 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:16:42,051 - 
+2025-09-04 12:16:43,056 - Interface gráfica inicializada
+2025-09-04 12:16:43,057 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:16:43,058 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:16:43,058 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:16:43,059 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:16:43,066 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:16:43,066 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:16:43,112 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:16:43,159 - Nenhum celular detectado.
+2025-09-04 12:16:43,162 - Nenhum celular detectado.
+2025-09-04 12:23:11,426 -  Iniciado em: 04/09/2025 12:23:11
+2025-09-04 12:23:11,427 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:23:11,427 - 
+2025-09-04 12:23:12,442 - Interface gráfica inicializada
+2025-09-04 12:23:12,442 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:23:12,443 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:23:12,443 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:23:12,462 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:23:12,462 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:23:12,462 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:23:12,519 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:23:12,567 - Nenhum celular detectado.
+2025-09-04 12:23:12,567 - Nenhum celular detectado.
+2025-09-04 12:27:05,463 -  Iniciado em: 04/09/2025 12:27:05
+2025-09-04 12:27:05,463 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:27:05,464 - 
+2025-09-04 12:27:06,469 - Interface gráfica inicializada
+2025-09-04 12:27:06,469 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:27:06,469 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:27:06,470 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:27:06,470 - 📁 Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:27:06,470 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:27:06,470 - 📁 Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:27:06,509 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:27:06,549 - Nenhum celular detectado.
+2025-09-04 12:27:06,549 - Nenhum celular detectado.
+2025-09-04 12:35:06,121 -  Iniciado em: 04/09/2025 12:35:06
+2025-09-04 12:35:06,121 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:35:06,121 - 
+2025-09-04 12:35:07,128 - Interface gráfica inicializada
+2025-09-04 12:35:07,128 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:35:07,128 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:35:07,128 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:35:07,128 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:35:07,128 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:35:07,129 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:35:07,176 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:35:07,226 - Usando celular: 0082825555	device
+2025-09-04 12:35:07,226 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:35:07,247 - [1/1] Processando: Exemplo Silva
+2025-09-04 12:35:07,247 - [1/1] Processando: Exemplo Silva
+2025-09-04 12:35:07,248 - ADAC - Iniciando discagem: Exemplo Silva (01/01/1990) - 11999999999
+2025-09-04 12:35:07,248 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 12:35:07,505 - Erro no comando ADB: adb.ex: device '0082825555	device' not found
+
+2025-09-04 12:35:07,505 - ADAC - ❌ Falha ao iniciar discagem
+2025-09-04 12:35:10,507 - === Processamento concluído ===
+2025-09-04 12:35:10,508 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:35:10,508 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:38:27,878 -  Iniciado em: 04/09/2025 12:38:27
+2025-09-04 12:38:27,879 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:38:27,879 - 
+2025-09-04 12:38:28,886 - Interface gráfica inicializada
+2025-09-04 12:38:28,886 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:38:28,887 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:38:28,887 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:38:28,887 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:38:28,890 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:38:28,890 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:38:28,958 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:38:29,011 - Usando celular: 0082825555	device
+2025-09-04 12:38:29,012 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:38:29,013 - === Processamento concluído ===
+2025-09-04 12:38:29,013 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 12:38:29,013 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 12:40:35,846 -  Iniciado em: 04/09/2025 12:40:35
+2025-09-04 12:40:35,846 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:40:35,847 - 
+2025-09-04 12:40:36,857 - Interface gráfica inicializada
+2025-09-04 12:40:36,858 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:40:36,859 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:40:36,859 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:40:36,860 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:40:36,860 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:40:36,861 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:40:37,158 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:40:37,203 - Usando celular: 0082825555	device
+2025-09-04 12:40:37,203 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:40:37,204 - [1/1] Processando: 08/08/1990
+2025-09-04 12:40:37,204 - [1/1] Processando: 08/08/1990
+2025-09-04 12:40:37,204 - ADAC - Iniciando discagem: 08/08/1990 (no) - 1139998946
+2025-09-04 12:40:37,204 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 12:40:37,249 - Erro no comando ADB: adb.ex: device '0082825555	device' not found
+
+2025-09-04 12:40:37,249 - ADAC - ❌ Falha ao iniciar discagem
+2025-09-04 12:40:40,251 - === Processamento concluído ===
+2025-09-04 12:40:40,251 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:40:40,252 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:43:17,939 -  Iniciado em: 04/09/2025 12:43:17
+2025-09-04 12:43:17,939 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:43:17,939 - 
+2025-09-04 12:43:18,947 - Interface gráfica inicializada
+2025-09-04 12:43:18,947 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:43:18,948 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:43:18,948 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:43:18,948 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:43:18,948 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:43:18,948 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:43:18,994 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:43:19,039 - Usando celular: 0082825555	device
+2025-09-04 12:43:19,039 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:43:19,040 - [1/1] Processando: central
+2025-09-04 12:43:19,040 - [1/1] Processando: central
+2025-09-04 12:43:19,040 - ADAC - Iniciando discagem: central (05/05/2000) - 1136998946
+2025-09-04 12:43:19,040 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 12:43:19,086 - Erro no comando ADB: adb.ex: device '0082825555	device' not found
+
+2025-09-04 12:43:19,086 - ADAC - ❌ Falha ao iniciar discagem
+2025-09-04 12:43:22,520 - === Processamento concluído ===
+2025-09-04 12:43:22,520 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:43:22,521 - Total: 1, Sucesso: 0, Falha: 0
+2025-09-04 12:46:49,676 -  Iniciado em: 04/09/2025 12:46:49
+2025-09-04 12:46:49,676 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:46:49,677 - 
+2025-09-04 12:46:50,690 - Interface gráfica inicializada
+2025-09-04 12:46:50,692 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:46:50,693 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:46:50,694 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:46:50,694 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:46:50,695 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:46:50,695 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:46:50,794 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:46:50,840 - Usando celular: 0082825555
+2025-09-04 12:46:50,841 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:46:50,841 - ℹ️ Nenhum contato para processar.
+2025-09-04 12:46:50,841 - ℹ️ Nenhum contato para processar.
+2025-09-04 12:46:50,841 - 💡 Adicione números no arquivo CSV existente
+2025-09-04 12:46:50,845 - 💡 Adicione números no arquivo CSV existente
+2025-09-04 12:46:50,845 - === Processamento concluído ===
+2025-09-04 12:46:50,846 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 12:46:50,846 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 12:46:50,846 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 12:46:50,847 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 12:47:49,315 -  Iniciado em: 04/09/2025 12:47:49
+2025-09-04 12:47:49,315 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:47:49,316 - 
+2025-09-04 12:47:50,325 - Interface gráfica inicializada
+2025-09-04 12:47:50,325 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:47:50,326 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:47:50,326 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:47:50,326 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:47:50,326 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:47:50,326 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:47:50,373 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:47:50,420 - Usando celular: 0082825555
+2025-09-04 12:47:50,420 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:47:50,421 - ✅ Encontrados 1 contatos para discar
+2025-09-04 12:47:50,421 - [1/1] Processando: central
+2025-09-04 12:47:50,421 - [1/1] Processando: central
+2025-09-04 12:47:50,421 - ADAC - Iniciando discagem: central (05/05/2000) - 1136998946
+2025-09-04 12:47:50,422 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 12:47:53,874 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-09-04 12:47:53,874 - 🔄 Transferindo para: 11999999999
+2025-09-04 12:47:58,302 - ✅ Transferência realizada
+2025-09-04 12:48:10,303 - ADAC - ✅ central (05/05/2000) - 1136998946 - ATENDEU, transferido para 11999999999, registro feito por ADAC
+2025-09-04 12:48:12,549 - ✅ central (05/05/2000) - 1136998946 - ATENDEU
+2025-09-04 12:48:15,550 - === Processamento concluído ===
+2025-09-04 12:48:15,550 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 12:48:15,552 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 12:48:15,553 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 12:48:15,554 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 12:53:34,102 -  Iniciado em: 04/09/2025 12:53:34
+2025-09-04 12:53:34,102 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 12:53:34,102 - 
+2025-09-04 12:53:35,114 - Interface gráfica inicializada
+2025-09-04 12:53:35,115 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:53:35,115 - === ADAC - Auto Discador iniciado ===
+2025-09-04 12:53:35,116 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:53:35,116 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 12:53:35,117 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:53:35,117 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 12:53:35,172 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 12:53:35,220 - Usando celular: 0082825555
+2025-09-04 12:53:35,220 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 12:53:35,221 - ✅ Encontrados 1 contatos para discar
+2025-09-04 12:53:35,221 - [1/1] Processando: central
+2025-09-04 12:53:35,221 - [1/1] Processando: central
+2025-09-04 12:53:35,221 - ADAC - Iniciando discagem: central (05/05/2000) - 36998946
+2025-09-04 12:53:35,222 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 12:53:38,447 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-09-04 12:53:38,447 - 🔄 Transferindo para: 11999999999
+2025-09-04 12:53:42,945 - ✅ Transferência realizada
+2025-09-04 12:53:54,946 - ADAC - ✅ central (05/05/2000) - 36998946 - ATENDEU, transferido para 11999999999, registro feito por ADAC
+2025-09-04 12:53:57,192 - ✅ central (05/05/2000) - 36998946 - ATENDEU
+2025-09-04 12:54:00,194 - === Processamento concluído ===
+2025-09-04 12:54:00,194 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 12:54:00,196 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 12:54:00,197 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 12:54:00,198 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 13:00:02,044 -  Iniciado em: 04/09/2025 13:00:02
+2025-09-04 13:00:02,044 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 13:00:02,045 - 
+2025-09-04 13:00:03,058 - Interface gráfica inicializada
+2025-09-04 13:00:03,059 - === ADAC - Auto Discador iniciado ===
+2025-09-04 13:00:03,060 - === ADAC - Auto Discador iniciado ===
+2025-09-04 13:00:03,060 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 13:00:03,061 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 13:00:03,061 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 13:00:03,062 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 13:00:03,195 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 13:00:03,244 - Usando celular: 0082825555
+2025-09-04 13:00:03,244 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 13:00:03,245 - ℹ️ Nenhum contato para processar.
+2025-09-04 13:00:03,245 - ℹ️ Nenhum contato para processar.
+2025-09-04 13:00:03,245 - 💡 Adicione números no arquivo CSV existente
+2025-09-04 13:00:03,246 - 💡 Adicione números no arquivo CSV existente
+2025-09-04 13:00:03,246 - === Processamento concluído ===
+2025-09-04 13:00:03,246 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 13:00:03,246 - Total: 0, Sucesso: 0, Falha: 0
+2025-09-04 13:00:03,246 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 13:00:03,247 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 13:00:45,563 -  Iniciado em: 04/09/2025 13:00:45
+2025-09-04 13:00:45,564 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-04 13:00:45,564 - 
+2025-09-04 13:00:46,576 - Interface gráfica inicializada
+2025-09-04 13:00:46,576 - === ADAC - Auto Discador iniciado ===
+2025-09-04 13:00:46,577 - === ADAC - Auto Discador iniciado ===
+2025-09-04 13:00:46,577 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 13:00:46,577 - Pasta de contatos: C:\Users\skrafael\Desktop\ADAC\contatos
+2025-09-04 13:00:46,577 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 13:00:46,578 - Pasta de logs: C:\Users\skrafael\Desktop\ADAC\logs
+2025-09-04 13:00:46,625 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-04 13:00:46,675 - Usando celular: 0082825555
+2025-09-04 13:00:46,675 - Arquivo CSV encontrado: C:\Users\skrafael\Desktop\ADAC\contatos\contatos.csv
+2025-09-04 13:00:46,675 - ✅ Encontrados 1 contatos para discar
+2025-09-04 13:00:46,676 - [1/1] Processando: central
+2025-09-04 13:00:46,676 - [1/1] Processando: central
+2025-09-04 13:00:46,676 - ADAC - Iniciando discagem: central (05/05/2000) - 36998946
+2025-09-04 13:00:46,676 - ADAC - Número de redirecionamento: 11999999999
+2025-09-04 13:00:47,856 - ADAC - ✅ Chamada atendida! Iniciando transferência...
+2025-09-04 13:01:06,558 - ADAC - ✅ central (05/05/2000) - 36998946 transferido para 11999999999
+2025-09-04 13:01:08,810 - ✅ central (05/05/2000) - 36998946 - ATENDEU
+2025-09-04 13:01:11,818 - === Processamento concluído ===
+2025-09-04 13:01:11,819 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 13:01:11,821 - Total: 1, Sucesso: 1, Falha: 0
+2025-09-04 13:01:11,823 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
+2025-09-04 13:01:11,824 - Log salvo em: C:\Users\skrafael\Desktop\ADAC\logs\adac_log.txt
