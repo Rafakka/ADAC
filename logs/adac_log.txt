@@ -24,3 +24,29 @@
 2025-09-09 11:39:38,572 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-09-09 11:39:38,689 - Nenhum celular detectado.
 2025-09-09 11:39:38,689 - Nenhum celular detectado.
+2025-09-09 12:27:21,897 -  Iniciado em: 09/09/2025 12:27:21
+2025-09-09 12:27:21,897 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 12:27:21,897 - 
+2025-09-09 12:27:22,904 - Interface gráfica inicializada
+2025-09-09 12:27:22,905 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:27:22,905 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:27:22,905 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:27:22,905 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:27:22,905 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:27:22,905 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:27:22,910 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 12:27:22,962 - Nenhum celular detectado.
+2025-09-09 12:27:22,962 - Nenhum celular detectado.
+2025-09-09 12:27:55,622 -  Iniciado em: 09/09/2025 12:27:55
+2025-09-09 12:27:55,623 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 12:27:55,623 - 
+2025-09-09 12:27:56,630 - Interface gráfica inicializada
+2025-09-09 12:27:56,630 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:27:56,630 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:27:56,630 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:27:56,630 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:27:56,631 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:27:56,631 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:27:56,634 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 12:27:56,638 - Nenhum celular detectado.
+2025-09-09 12:27:56,638 - Nenhum celular detectado.
