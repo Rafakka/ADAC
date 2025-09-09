@@ -93,15 +93,18 @@ def verificar_chamada_ativa(device_serial):
         return "ERRO"
 
 def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_manager=None):
-    """Disca número e transfere para o número configurado"""
-    try:
-        logging.info(f"ADAC - Iniciando discagem: {nome} ({data_nascimento}) - {numero}")
-        logging.info(f"ADAC - Número de redirecionamento: {NUMERO_REDIRECIONAMENTO}")
-        
-        # Usar CALL intent
+    """Disca número e aguarda até que a pessoa desligue; tenta novamente se ocupado."""
+    MAX_TENTATIVAS = 3
+    RETRY_DELAY = 5  # segundos
+
+    tentativa = 0
+    while tentativa < MAX_TENTATIVAS:
+        tentativa += 1
+        logging.info(f"ADAC - Tentativa {tentativa}/{MAX_TENTATIVAS}: {nome} ({data_nascimento}) - {numero}")
+
+        # Iniciar chamada
         success = executar_comando_adb([
-            "shell", "am", "start", "-a", 
-            "android.intent.action.CALL", "-d", f"tel:{numero}"
+            "shell", "am", "start", "-a", "android.intent.action.CALL", "-d", f"tel:{numero}"
         ], device_serial)
         
         if not success:
@@ -109,61 +112,48 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
             if csv_manager:
                 csv_manager.marcar_como_processado(numero, "FALHA_DISCAGEM", nome, data_nascimento)
             return "FALHA_DISCAGEM"
-        
-        # Aguardar e verificar status da chamada
+
         time.sleep(3)
         status_chamada = verificar_chamada_ativa(device_serial)
-        
+
+        if status_chamada == "TOCANDO":
+            logging.info("ADAC - Tocando... aguardando resposta")
+            time.sleep(2)
+            status_chamada = verificar_chamada_ativa(device_serial)
+
         if status_chamada == "ATENDEU":
-            logging.info("ADAC - ✅ Chamada atendida! Transferindo...")
-            
-            # Transferir para o número configurado
-            transferir_ligacao(device_serial)
-            time.sleep(TEMPO_TRANSFERENCIA)
-            
-            logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, transferido para {NUMERO_REDIRECIONAMENTO}, registro feito por ADAC")
-            
-            if csv_manager:
-                csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
-            
+            logging.info("ADAC - ✅ Chamada atendida! Aguardando até desligar...")
+            # Loop aguardando usuário desligar
+            while True:
+                status = verificar_chamada_ativa(device_serial)
+                if status in ["NAO_ATENDEU", "ERRO", "INDEFINIDO"]:
+                    logging.info(f"ADAC - ✅ {nome} desligou ou erro na chamada")
+                    if csv_manager:
+                        csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
+                    break
+                time.sleep(1)
+
+            # Encerrar chamada apenas se ainda estiver ativa
+            executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
+            time.sleep(1)
+            executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
+            return "ATENDEU"
+
         elif status_chamada == "NAO_ATENDEU":
-            logging.info("ADAC - ❌ Chamada não atendida")
-            logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
-            
+            logging.warning(f"ADAC - ❌ {nome} não atendeu")
+        else:
+            logging.warning(f"ADAC - Status da chamada: {status_chamada}")
+
+        # Se chegou aqui, tenta novamente se não chegou ao máximo
+        if tentativa < MAX_TENTATIVAS:
+            logging.info(f"ADAC - Tentando novamente em {RETRY_DELAY}s...")
+            time.sleep(RETRY_DELAY)
+        else:
+            logging.info(f"ADAC - ❌ {nome} não atendeu após {MAX_TENTATIVAS} tentativas")
             if csv_manager:
                 csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
-                
-        elif status_chamada == "TOCANDO":
-            time.sleep(10)
-            status_chamada = verificar_chamada_ativa(device_serial)
-            
-            if status_chamada == "ATENDEU":
-                logging.info("ADAC - ✅ Chamada atendida após espera! Transferindo...")
-                transferir_ligacao(device_serial)
-                time.sleep(TEMPO_TRANSFERENCIA)
-                logging.info(f"ADAC - ✅ {nome} ({data_nascimento}) - {numero} - ATENDEU, transferido para {NUMERO_REDIRECIONAMENTO}, registro feito por ADAC")
-                
-                if csv_manager:
-                    csv_manager.marcar_como_processado(numero, "ATENDEU", nome, data_nascimento)
-            else:
-                logging.info(f"ADAC - ❌ {nome} ({data_nascimento}) - {numero} - NÃO ATENDEU, registro feito por ADAC")
-                
-                if csv_manager:
-                    csv_manager.marcar_como_processado(numero, "NAO_ATENDEU", nome, data_nascimento)
-        
-        # Encerrar chamada
-        executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
-        time.sleep(2)
-        executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
-        
-        return status_chamada
-        
-    except Exception as e:
-        logging.error(f"ADAC - 💥 Erro no processo: {e}")
-        executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
-        executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
-        
-        if csv_manager:
-            csv_manager.marcar_como_processado(numero, "ERRO", nome, data_nascimento)
-        
-        return "ERRO"
+            # Encerrar chamada
+            executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
+            time.sleep(1)
+            executar_comando_adb("shell input keyevent KEYCODE_HOME", device_serial)
+            return "NAO_ATENDEU"
