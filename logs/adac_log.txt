@@ -1,0 +1,13 @@
+2025-09-09 11:34:10,947 -  Iniciado em: 09/09/2025 11:34:10
+2025-09-09 11:34:10,947 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 11:34:10,947 - 
+2025-09-09 11:34:11,960 - Interface gráfica inicializada
+2025-09-09 11:34:11,961 - === ADAC - Auto Discador iniciado ===
+2025-09-09 11:34:11,962 - === ADAC - Auto Discador iniciado ===
+2025-09-09 11:34:11,963 - 📁 Pasta de contatos: c:\Users\skrafael\Documents\GitHub\ADAC\contatos
+2025-09-09 11:34:11,964 - 📁 Pasta de contatos: c:\Users\skrafael\Documents\GitHub\ADAC\contatos
+2025-09-09 11:34:11,965 - 📁 Pasta de logs: c:\Users\skrafael\Documents\GitHub\ADAC\logs
+2025-09-09 11:34:11,965 - 📁 Pasta de logs: c:\Users\skrafael\Documents\GitHub\ADAC\logs
+2025-09-09 11:34:12,943 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 11:34:15,626 - Nenhum celular detectado.
+2025-09-09 11:34:15,626 - Nenhum celular detectado.
