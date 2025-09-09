@@ -11,3 +11,16 @@
 2025-09-09 11:34:12,943 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-09-09 11:34:15,626 - Nenhum celular detectado.
 2025-09-09 11:34:15,626 - Nenhum celular detectado.
+2025-09-09 11:39:37,393 -  Iniciado em: 09/09/2025 11:39:37
+2025-09-09 11:39:37,394 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 11:39:37,394 - 
+2025-09-09 11:39:38,402 - Interface gráfica inicializada
+2025-09-09 11:39:38,402 - === ADAC - Auto Discador iniciado ===
+2025-09-09 11:39:38,402 - === ADAC - Auto Discador iniciado ===
+2025-09-09 11:39:38,403 - 📁 Pasta de contatos: c:\Users\skrafael\Documents\GitHub\ADAC\contatos
+2025-09-09 11:39:38,406 - 📁 Pasta de contatos: c:\Users\skrafael\Documents\GitHub\ADAC\contatos
+2025-09-09 11:39:38,407 - 📁 Pasta de logs: c:\Users\skrafael\Documents\GitHub\ADAC\logs
+2025-09-09 11:39:38,407 - 📁 Pasta de logs: c:\Users\skrafael\Documents\GitHub\ADAC\logs
+2025-09-09 11:39:38,572 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 11:39:38,689 - Nenhum celular detectado.
+2025-09-09 11:39:38,689 - Nenhum celular detectado.
