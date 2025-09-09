@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "./utilidades/test_"
-    ]
+    ],
+    "python-envs.pythonProjects": []
 }
