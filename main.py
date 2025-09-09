@@ -78,6 +78,10 @@ def main():
         tentando_conectar = True
 
         while tentando_conectar:
+            if GUI_AVAILABLE:
+                while is_gui_paused() and not should_stop():
+                    time_module.sleep(0.5)
+                    
             devices = detectar_dispositivos()
 
             if devices:
