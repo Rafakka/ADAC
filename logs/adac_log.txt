@@ -50,3 +50,49 @@
 2025-09-09 12:27:56,634 - ADB encontrado: Android Debug Bridge version 1.0.41
 2025-09-09 12:27:56,638 - Nenhum celular detectado.
 2025-09-09 12:27:56,638 - Nenhum celular detectado.
+2025-09-09 12:54:06,759 -  Iniciado em: 09/09/2025 12:54:06
+2025-09-09 12:54:07,106 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 12:54:07,106 - 
+2025-09-09 12:54:08,121 - Interface gráfica inicializada
+2025-09-09 12:54:08,122 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:54:08,122 - === ADAC - Auto Discador iniciado ===
+2025-09-09 12:54:08,122 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:54:08,122 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 12:54:08,122 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:54:08,122 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 12:54:08,583 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 12:54:08,744 - Nenhum celular detectado.
+2025-09-09 12:54:08,745 - Nenhum celular detectado.
+2025-09-09 13:28:20,280 -  Iniciado em: 09/09/2025 13:28:20
+2025-09-09 13:28:20,280 -  Pressione F1 para ajuda, ESPAÇO para pausar, ESC para sair
+2025-09-09 13:28:20,280 - 
+2025-09-09 13:28:21,288 - Interface gráfica inicializada
+2025-09-09 13:28:21,288 - === ADAC - Auto Discador iniciado ===
+2025-09-09 13:28:21,289 - === ADAC - Auto Discador iniciado ===
+2025-09-09 13:28:21,289 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 13:28:21,290 - 📁 Pasta de contatos: /home/rafael/ADAC/contatos
+2025-09-09 13:28:21,290 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 13:28:21,291 - 📁 Pasta de logs: /home/rafael/ADAC/logs
+2025-09-09 13:28:22,000 - ADB encontrado: Android Debug Bridge version 1.0.41
+2025-09-09 13:28:22,004 - Dispositivo detectado: 0082825555             device usb:1-1 product:miami_g model:motorola_edge_30_neo device:miami transport_id:1
+2025-09-09 13:28:22,004 - Usando celular: 0082825555
+2025-09-09 13:28:22,004 - 📋 Arquivo CSV encontrado: /home/rafael/ADAC/contatos/contatos.csv
+2025-09-09 13:28:22,005 - ✅ Encontrados 3 contatos para discar
+2025-09-09 13:28:22,005 - [1/3] Processando: João Silva
+2025-09-09 13:28:22,005 - [1/3] Processando: João Silva
+2025-09-09 13:28:22,006 - ADAC - Iniciando discagem: João Silva (15/05/1990) - 0082825555
+2025-09-09 13:28:22,006 - ADAC - Número de redirecionamento: 1136529510
+2025-09-09 13:28:25,214 - ADAC - ✅ Chamada atendida! Transferindo...
+2025-09-09 13:28:25,215 - 🔄 Transferindo para: 1136529510
+2025-09-09 13:28:29,201 - ✅ Transferência realizada
+2025-09-09 13:28:39,212 - ADAC - ✅ João Silva (15/05/1990) - 0082825555 - ATENDEU, transferido para 1136529510, registro feito por ADAC
+2025-09-09 13:28:41,314 - ✅ João Silva (15/05/1990) - 0082825555 - ATENDEU, registro feito por ADAC
+2025-09-09 13:28:44,318 - Execução interrompida pelo usuário
+2025-09-09 13:28:44,318 - Execução interrompida pelo usuário
+2025-09-09 13:28:44,318 - === ADAC - Processamento concluído ===
+2025-09-09 13:28:44,318 - 📊 Total: 3 contatos
+2025-09-09 13:28:44,318 - ✅ Sucesso: 1
+2025-09-09 13:28:44,319 - ❌ Falha: 0
+2025-09-09 13:28:44,319 - 📄 Log salvo em: /home/rafael/ADAC/logs/adac_log.txt
+2025-09-09 13:28:44,319 - 📄 Log salvo em: /home/rafael/ADAC/logs/adac_log.txt
+2025-09-09 13:28:44,319 - Processamento concluído. Pressione ESC para fechar.
