@@ -73,20 +73,29 @@ def main():
             if GUI_AVAILABLE:
                 update_gui_status(status="Erro - ADB não disponível")
             sys.exit(1)
-
-        devices = detectar_dispositivos()
-
-        if not devices:
-            log_combined("Nenhum celular detectado.", "error")
-            if GUI_AVAILABLE:
-                update_gui_status(status="Erro - Nenhum dispositivo")
-            sys.exit(1)
-
-        CELULAR = devices[0]
-        log_combined(f"Usando celular: {CELULAR}", "success")
         
-        if GUI_AVAILABLE:
-            update_gui_status(device=f"Conectado: {CELULAR}")
+        CELULAR = None
+        tentando_conectar = True
+
+        while tentando_conectar:
+            devices = detectar_dispositivos()
+
+            if devices:
+                CELULAR = devices[0]
+                log_combined(f"Usando celular:{CELULAR}","sucess")
+                if GUI_AVAILABLE:
+                    update_gui_status(device=f"Conectado:{CELULAR}")
+                tentando_conectar = False
+            else:
+                log_combined("Nenhum celular detectado, aguardado conecção...","warning")
+                if GUI_AVAILABLE:
+                    update_gui_status(status="Aguardando dispositivo...")
+                
+                for _ in range(3):
+                    time_module.sleep(1)
+                if GUI_AVAILABLE and should_stop():
+                    log_combined("Execução interrompida pelo usuario","warning")
+                    sys.exit(0)
 
         # CSVManager com novo comportamento
         csv_manager = CSVManager()
