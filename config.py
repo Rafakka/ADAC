@@ -33,6 +33,7 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "config.txt")
 NUMERO_REDIRECIONAMENTO = "11999999999"  # Número padrão para transferência
 TEMPO_DISCAGEM = 12
 TEMPO_TRANSFERENCIA = 12
+TENTATIVAS_REDISCAGEM = 3  # Número de tentativas quando ocupado
 
 # Carregar configurações do arquivo
 def carregar_configuracoes():
@@ -40,7 +41,8 @@ def carregar_configuracoes():
     config = {
         'numero_redirecionamento': NUMERO_REDIRECIONAMENTO,
         'tempo_discagem': TEMPO_DISCAGEM,
-        'tempo_transferencia': TEMPO_TRANSFERENCIA
+        'tempo_transferencia': TEMPO_TRANSFERENCIA,
+        'tentativas_rediscagem': TENTATIVAS_REDISCAGEM
     }
     
     try:
@@ -59,6 +61,8 @@ def carregar_configuracoes():
                             config['tempo_discagem'] = int(value)
                         elif key == 'tempo_transferencia':
                             config['tempo_transferencia'] = int(value)
+                        elif key == 'tentativas_rediscagem':  # Nova configuração
+                            config['tentativas_rediscagem'] = int(value)
     except Exception as e:
         logging.error(f"Erro ao carregar configurações: {e}")
     
@@ -71,6 +75,7 @@ configuracoes = carregar_configuracoes()
 NUMERO_REDIRECIONAMENTO = configuracoes['numero_redirecionamento']
 TEMPO_DISCAGEM = configuracoes['tempo_discagem']
 TEMPO_TRANSFERENCIA = configuracoes['tempo_transferencia']
+TENTATIVAS_REDISCAGEM = configuracoes['tentativas_rediscagem']  # Nova variável
 
 # Caminho padrão do CSV
 CSV_DEFAULT_PATH = os.path.join(CONTATOS_DIR, "contatos.csv")
