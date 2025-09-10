@@ -2,7 +2,7 @@ import subprocess
 import time
 import logging
 import os
-from config import ADB_PATH, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO
+from config import ADB_PATH, SMS_ENABLED, SMS_MENSAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO, TENTATIVAS_REDISCAGEM, WHATSAPP_NUMBER
 
 def executar_comando_adb(comando, device_serial=None):
     """Executa comando ADB com tratamento de erro"""
@@ -132,6 +132,7 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
         
         tentativas = 0
         status_final = "NAO_ATENDEU"
+        linha_ocupada = False
         
         while tentativas < TENTATIVAS_REDISCAGEM:
             tentativas += 1
@@ -156,6 +157,7 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
                 logging.info("ADAC - 📞 Linha ocupada, tentando novamente em 5 segundos...")
                 executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
                 time.sleep(5)
+                linha_ocupada = True
                 continue
             
             elif status_chamada == "ATIVA":
@@ -212,11 +214,31 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
             executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
             time.sleep(2)
             
-            # Se não foi bem sucedido, esperar 5 segundos antes de tentar novamente
-            if status_final != "ATENDEU" and tentativas < TENTATIVAS_REDISCAGEM:
-                logging.info(f"ADAC - ⏱️  Aguardando 5 segundos para próxima tentativa...")
-                time.sleep(5)
-        
+            if (status_final == "NAO_ATENDEU" or linha_ocupada) and SMS_ENABLED:
+                logging.info("ADAC - 📱 Tentativas esgotadas, enviando SMS...")
+            
+            # Importar e usar o módulo SMS
+            try:
+                from sms import enviar_sms, obter_numero_whatsapp
+                
+                # Obter número do WhatsApp (tentar detectar ou usar configurado)
+                numero_whatsapp = obter_numero_whatsapp(device_serial) or WHATSAPP_NUMBER
+                
+                # Formatar mensagem
+                mensagem_final = SMS_MENSAGEM.format(numero_whatsapp)
+                
+                # Enviar SMS
+                if enviar_sms(numero, nome, device_serial):
+                    logging.info(f"ADAC - ✅ SMS enviado para {numero}")
+                    status_final = "SMS_ENVIADO"
+                else:
+                    logging.warning("ADAC - ❌ Falha ao enviar SMS")
+                    
+            except ImportError:
+                logging.error("ADAC - ❌ Módulo SMS não encontrado")
+            except Exception as e:
+                logging.error(f"ADAC - ❌ Erro ao enviar SMS: {e}")
+
         # Limpar estado final
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
         time.sleep(2)

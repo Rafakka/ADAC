@@ -5,3 +5,8 @@ numero_redirecionamento=1136529510
 tempo_discagem=12
 tempo_transferencia=12
 tentativas_rediscagem=3
+
+# Configurações de SMS
+sms_enabled=true
+whatsapp_number=5511999999999
+sms_mensagem=Olá {}! Tentei entrar em contato. Podemos conversar pelo WhatsApp? wa.me/{}
