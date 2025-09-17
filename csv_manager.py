@@ -1,134 +1,114 @@
-import csv
 import os
 from datetime import datetime
-from config import CONTATOS_DIR, CSV_DEFAULT_PATH
+from config import CONTATOS_DIR
 
-class CSVManager:
-    def __init__(self, csv_path=None):
-        # Se não foi passado um caminho, encontrar automaticamente
-        if csv_path is None:
-            self.csv_path = self.encontrar_arquivo_csv()
+import os
+from datetime import datetime
+from openpyxl import load_workbook
+from openpyxl.styles import PatternFill
+
+class XLSXManager:
+    def __init__(self, xlsx_path=None):
+        if xlsx_path is None:
+            self.xlsx_path = self.encontrar_arquivo_xlsx()
         else:
-            self.csv_path = csv_path
-        
-        # Verificar se o arquivo existe
-        self.arquivo_existe = os.path.exists(self.csv_path)
-    
-    def encontrar_arquivo_csv(self):
-        """Encontra automaticamente o arquivo CSV na pasta contatos/"""
+            self.xlsx_path = xlsx_path
+
+        self.arquivo_existe = os.path.exists(self.xlsx_path)
+
+    def encontrar_arquivo_xlsx(self):
+        """Encontra automaticamente o arquivo XLSX na pasta contatos/"""
         try:
-            # Verificar se existe o arquivo padrão
-            if os.path.exists(CSV_DEFAULT_PATH):
-                return CSV_DEFAULT_PATH
-            
-            # Procurar por qualquer arquivo CSV na pasta contatos/
             if os.path.exists(CONTATOS_DIR):
                 for arquivo in os.listdir(CONTATOS_DIR):
-                    if arquivo.lower().endswith('.csv'):
-                        caminho_completo = os.path.join(CONTATOS_DIR, arquivo)
-                        if os.path.exists(caminho_completo):
-                            return caminho_completo
-            
-            # Se não encontrou nenhum arquivo CSV
-            return CSV_DEFAULT_PATH  # Retorna o caminho padrão, mas o arquivo não existe
-            
+                    if arquivo.lower().endswith('.xlsx'):
+                        return os.path.join(CONTATOS_DIR, arquivo)
+            return None
         except Exception as e:
-            print(f"Erro ao procurar arquivo CSV: {e}")
-            return CSV_DEFAULT_PATH
-    
+            print(f"Erro ao procurar arquivo XLSX: {e}")
+            return None
+
     def arquivo_existente(self):
-        """Retorna True se o arquivo CSV existe"""
         return self.arquivo_existe
-    
-    def criar_csv_inicial(self):
-        """NÃO cria CSV automaticamente - apenas verifica"""
-        if not self.arquivo_existe:
-            return False  # Indica que não criou arquivo
-        return True  # Arquivo já existe
-    
+
     def ler_contatos(self):
-        """Lê contatos do CSV se o arquivo existir"""
+        """Lê contatos do XLSX"""
         if not self.arquivo_existe:
-            return []  # Retorna lista vazia se arquivo não existe
-        
+            return []
+
         contatos = []
         try:
-            with open(self.csv_path, 'r', newline='', encoding='utf-8') as csvfile:
-                reader = csv.DictReader(csvfile)
-                for row in reader:
-                    if row.get('status') not in ['SUCESSO', 'PROCESSADO']:
-                        contatos.append({
-                            'numero': row['numero'],
-                            'nome': row.get('nome', ''),
-                            'data_nascimento': row.get('data_nascimento', ''),
-                            'status': row.get('status', 'PENDENTE')
-                        })
+            wb = load_workbook(self.xlsx_path)
+            ws = wb.active
+
+            # Cabeçalhos (linhas de título)
+            headers = {cell.value: idx for idx, cell in enumerate(ws[1], start=1)}
+
+            for row in ws.iter_rows(min_row=2, values_only=False):
+                paciente = row[headers['PACIENTE'] - 1].value
+                data_nasc = row[headers['DATA NASCIMENTO'] - 1].value
+                tel_recado = row[headers['TEL. RECADO'] - 1].value
+                tel_celular = row[headers['TEL. CELULAR'] - 1].value
+                status = row[headers.get('status', 0) - 1].value if 'status' in headers else None
+
+                if status not in ['SUCESSO', 'PROCESSADO']:
+                    numero = tel_recado if tel_recado else tel_celular
+                    contatos.append({
+                        'numero': str(numero) if numero else '',
+                        'nome': paciente or '',
+                        'data_nascimento': str(data_nasc) if data_nasc else '',
+                        'status': status or 'PENDENTE'
+                    })
+
             return contatos
-        except FileNotFoundError:
-            print(f"Arquivo {self.csv_path} não encontrado")
-            return []
         except Exception as e:
-            print(f"Erro ao ler CSV: {e}")
+            print(f"Erro ao ler XLSX: {e}")
             return []
-    
+
     def marcar_como_processado(self, numero, status, nome="", data_nascimento=""):
-        """Marca um número como processado (apenas se arquivo existir)"""
+        """Atualiza status no XLSX e pinta de azul/vermelho"""
         if not self.arquivo_existe:
-            return False  # Não faz nada se arquivo não existe
-            
+            return False
+
         try:
-            # Ler todas as linhas
-            rows = []
-            with open(self.csv_path, 'r', newline='', encoding='utf-8') as csvfile:
-                reader = csv.DictReader(csvfile)
-                fieldnames = reader.fieldnames
-                for row in reader:
-                    if row['numero'] == numero:
-                        row['status'] = status
-                        row['data_processamento'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                        
-                        # Corrigir tentativas
-                        tentativas = row.get('tentativas', '').strip()
-                        if not tentativas or not tentativas.isdigit():
-                            row['tentativas'] = '1'
-                        else:
-                            row['tentativas'] = str(int(tentativas) + 1)
-                        
-                        # Atualizar nome e data se fornecidos
-                        if nome:
-                            row['nome'] = nome
-                        if data_nascimento:
-                            row['data_nascimento'] = data_nascimento
-                    
-                    rows.append(row)
-            
-            # Reescrever o arquivo
-            with open(self.csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(rows)
-                
+            wb = load_workbook(self.xlsx_path)
+            ws = wb.active
+
+            headers = {cell.value: idx for idx, cell in enumerate(ws[1], start=1)}
+
+            for row in ws.iter_rows(min_row=2):
+                tel_recado = row[headers['tel. recado'] - 1].value
+                tel_celular = row[headers['tel. celular'] - 1].value
+                numero_atual = str(tel_recado if tel_recado else tel_celular)
+
+                if numero_atual == str(numero):
+                    # Atualizar status e data_processamento
+                    if 'status' in headers:
+                        row[headers['status'] - 1].value = status
+                    if 'data_processamento' in headers:
+                        row[headers['data_processamento'] - 1].value = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+                    # Pintar célula do status
+                    fill = None
+                    if status.upper() in ["SUCESSO", "ATENDEU"]:
+                        fill = PatternFill(start_color="ADD8E6", end_color="ADD8E6", fill_type="solid")  # Azul claro
+                    else:
+                        fill = PatternFill(start_color="FF6347", end_color="FF6347", fill_type="solid")  # Vermelho tomate
+
+                    if fill and 'status' in headers:
+                        row[headers['status'] - 1].fill = fill
+
+                    # Atualizar nome e data_nascimento se fornecidos
+                    if nome and 'paciente' in headers:
+                        row[headers['paciente'] - 1].value = nome
+                    if data_nascimento and 'DATA NASCIMENTO' in headers:
+                        row[headers['DATA NASCIMENTO'] - 1].value = data_nascimento
+
+            wb.save(self.xlsx_path)
             return True
         except Exception as e:
-            print(f"Erro ao atualizar CSV: {e}")
+            print(f"Erro ao atualizar XLSX: {e}")
             return False
-    
-    def get_csv_path(self):
-        """Retorna o caminho do CSV em uso"""
-        return self.csv_path
-    
-    def listar_arquivos_csv(self):
-        """Lista todos os arquivos CSV disponíveis na pasta contatos/"""
-        try:
-            if not os.path.exists(CONTATOS_DIR):
-                return []
-            
-            arquivos_csv = []
-            for arquivo in os.listdir(CONTATOS_DIR):
-                if arquivo.lower().endswith('.csv'):
-                    arquivos_csv.append(arquivo)
-            
-            return arquivos_csv
-        except Exception as e:
-            print(f"Erro ao listar arquivos CSV: {e}")
-            return []
+
+    def get_xlsx_path(self):
+        return self.xlsx_path
