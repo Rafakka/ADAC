@@ -1,9 +1,5 @@
 import pygame
-import sys
-import os
-import logging
 from datetime import datetime
-from config import CONTATOS_DIR, LOGS_DIR
 
 class ADACGUI:
     def __init__(self):

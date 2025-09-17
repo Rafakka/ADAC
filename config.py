@@ -5,7 +5,7 @@ import logging
 
 GUI_ENABLED = True
 SMS_ENABLED = True
-WHATSAPP_NUMER ="5511999999"
+WHATSAPP_NUMBER =5511999999
 SMS_MENSAGEM= "Olá {}! Tentei entrar em contato. Podemos conversar pelo WhatsApp? wa.me/{}"
 
 # Determinar caminho base

@@ -3,11 +3,8 @@ Main com GUI no thread principal
 """
 
 import pygame
-import sys
-import os
 import time
 import threading
-from datetime import datetime
 from gui_integrada import ADACGUI, log_message, update_gui_status
 
 # Variáveis globais para comunicação entre threads
