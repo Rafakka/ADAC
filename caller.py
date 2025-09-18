@@ -4,6 +4,36 @@ import logging
 import os
 from config import ADB_PATH, SMS_ENABLED, SMS_MENSAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO, TENTATIVAS_REDISCAGEM, WHATSAPP_NUMBER
 
+def numero_tem_whatsapp(numero, device_serial=None):
+    """
+    Verifica se o número possui WhatsApp instalado/registrado no dispositivo.
+    Retorna True se puder enviar WhatsApp, False caso contrário.
+    """
+    try:
+        # 1. Verifica se o WhatsApp está instalado
+        result = subprocess.run(
+            [ADB_PATH, "-s", device_serial, "shell", "pm", "list", "packages"],
+            capture_output=True, text=True
+        )
+        if "com.whatsapp" not in result.stdout:
+            return False
+
+        # 2. Tenta iniciar um envio de mensagem de teste sem abrir a interface visível
+        comando_test = [
+            "shell", "am", "start",
+            "-a", "android.intent.action.SENDTO",
+            "-d", f"smsto:{numero}",
+            "--es", "sms_body:test",
+            "-n", "com.whatsapp/.HomeActivity"
+        ]
+        if executar_comando_adb(comando_test, device_serial):
+            return True
+        else:
+            return False
+    except Exception as e:
+        logging.error(f"Erro ao verificar WhatsApp para {numero}: {e}")
+        return False
+
 def enviar_whatsapp(numero, mensagem, device_serial=None):
     
     try:
@@ -235,39 +265,43 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
             time.sleep(2)
             
             
-        # Fallback após tentativas de discagem
-        # -----------------------------
-        if (status_final == "NAO_ATENDEU" or linha_ocupada) and SMS_ENABLED:
-            logging.info("ADAC - 📱 Tentativas esgotadas, verificando WhatsApp/SMS...")
+            if (status_final == "NAO_ATENDEU" or linha_ocupada) and SMS_ENABLED:
+                logging.info("ADAC - 📱 Tentativas esgotadas, verificando WhatsApp/SMS...")
 
             try:
-                from sms import enviar_sms, obter_numero_whatsapp  # módulo existente
-                # Função WhatsApp importada do caller
-                from caller import enviar_whatsapp  
+                from sms import enviar_sms  # módulo existente
+                from caller import enviar_whatsapp, numero_tem_whatsapp  
 
-                # Detectar se o número possui WhatsApp
-                numero_whatsapp = obter_numero_whatsapp(device_serial) or numero
-                mensagem_final = SMS_MENSAGEM.format(numero_whatsapp)
+                mensagem_final = SMS_MENSAGEM.format(numero)
 
-                # Tenta enviar pelo WhatsApp
-                if enviar_whatsapp(numero, mensagem_final, device_serial):
-                    logging.info(f"ADAC - ✅ WhatsApp enviado para {numero}")
-                    status_final = "WHATSAPP_ENVIADO"
+                if numero_tem_whatsapp(numero, device_serial):
+                    if enviar_whatsapp(numero, mensagem_final, device_serial):
+                        logging.info(f"ADAC - ✅ WhatsApp enviado para {numero}")
+                        status_final = "WHATSAPP_ENVIADO"
+                    else:
+                        logging.warning(f"ADAC - ❌ Falha ao enviar WhatsApp para {numero}, tentando SMS")
+                        if enviar_sms(numero, mensagem_final, device_serial):
+                            logging.info(f"ADAC - ✅ SMS enviado para {numero}")
+                            status_final = "SMS_ENVIADO"
+                        else:
+                            logging.warning(f"ADAC - ❌ Falha ao enviar SMS para {numero}")
+                            status_final = "ERRO_ENVIO"
                 else:
-                    logging.info(f"ADAC - ❌ WhatsApp não disponível, tentando SMS para {numero}")
+                    logging.info(f"ADAC - WhatsApp não disponível para {numero}, tentando SMS")
                     if enviar_sms(numero, mensagem_final, device_serial):
                         logging.info(f"ADAC - ✅ SMS enviado para {numero}")
                         status_final = "SMS_ENVIADO"
                     else:
-                        logging.warning(f"ADAC - ❌ Falha ao enviar SMS/WhatsApp para {numero}")
+                        logging.warning(f"ADAC - ❌ Falha ao enviar SMS para {numero}")
                         status_final = "ERRO_ENVIO"
 
             except ImportError as e:
-                logging.error(f"ADAC - ❌ Módulo SMS ou WhatsApp não encontrado: {e}")
+                logging.error(f"ADAC - ❌ Módulo SMS/WhatsApp não encontrado: {e}")
                 status_final = "ERRO_ENVIO"
             except Exception as e:
                 logging.error(f"ADAC - ❌ Erro ao enviar WhatsApp/SMS: {e}")
                 status_final = "ERRO_ENVIO"
+
 
         # Limpar estado final
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
