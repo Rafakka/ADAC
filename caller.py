@@ -4,6 +4,26 @@ import logging
 import os
 from config import ADB_PATH, SMS_ENABLED, SMS_MENSAGEM, TEMPO_TRANSFERENCIA, NUMERO_REDIRECIONAMENTO, TENTATIVAS_REDISCAGEM, WHATSAPP_NUMBER
 
+def enviar_whatsapp(numero, mensagem, device_serial=None):
+    
+    try:
+        result =subprocess.run([ADB_PATH,"-s",device_serial,"shell","pm","list","packages"],
+        capture_output=True, text=True)
+        if"com.whatsapp" not in result.stdout:
+            logging.info(f"Whatsapp não instalado. Não foi possivel enviar mensagem para {numero}")
+            return False
+        logging.info(f"Enviando Whatsapp para {numero}: {mensagem}")
+        comando = [
+        "shell","am","start",
+        "-a","android.intent.action.SENDTO",
+        "-d",f"smsto:{numero}",
+        "--es",f"sms_body:{mensagem}",
+        "-n","com.whatsapp/.HomeActivity"]
+        return executar_comando_adb(comando,device_serial)
+    except Exception as e:
+        logging.error(f"Falha ao enviar Whatsapp:{e}")
+        return False
+
 def executar_comando_adb(comando, device_serial=None):
     """Executa comando ADB com tratamento de erro"""
     try:
@@ -214,30 +234,40 @@ def discar_e_transferir(numero, nome, data_nascimento, device_serial=None, csv_m
             executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
             time.sleep(2)
             
-            if (status_final == "NAO_ATENDEU" or linha_ocupada) and SMS_ENABLED:
-                logging.info("ADAC - 📱 Tentativas esgotadas, enviando SMS...")
             
-            # Importar e usar o módulo SMS
+        # Fallback após tentativas de discagem
+        # -----------------------------
+        if (status_final == "NAO_ATENDEU" or linha_ocupada) and SMS_ENABLED:
+            logging.info("ADAC - 📱 Tentativas esgotadas, verificando WhatsApp/SMS...")
+
             try:
-                from sms import enviar_sms, obter_numero_whatsapp
-                
-                # Obter número do WhatsApp (tentar detectar ou usar configurado)
-                numero_whatsapp = obter_numero_whatsapp(device_serial) or WHATSAPP_NUMBER
-                
-                # Formatar mensagem
+                from sms import enviar_sms, obter_numero_whatsapp  # módulo existente
+                # Função WhatsApp importada do caller
+                from caller import enviar_whatsapp  
+
+                # Detectar se o número possui WhatsApp
+                numero_whatsapp = obter_numero_whatsapp(device_serial) or numero
                 mensagem_final = SMS_MENSAGEM.format(numero_whatsapp)
-                
-                # Enviar SMS
-                if enviar_sms(numero, nome, device_serial):
-                    logging.info(f"ADAC - ✅ SMS enviado para {numero}")
-                    status_final = "SMS_ENVIADO"
+
+                # Tenta enviar pelo WhatsApp
+                if enviar_whatsapp(numero, mensagem_final, device_serial):
+                    logging.info(f"ADAC - ✅ WhatsApp enviado para {numero}")
+                    status_final = "WHATSAPP_ENVIADO"
                 else:
-                    logging.warning("ADAC - ❌ Falha ao enviar SMS")
-                    
-            except ImportError:
-                logging.error("ADAC - ❌ Módulo SMS não encontrado")
+                    logging.info(f"ADAC - ❌ WhatsApp não disponível, tentando SMS para {numero}")
+                    if enviar_sms(numero, mensagem_final, device_serial):
+                        logging.info(f"ADAC - ✅ SMS enviado para {numero}")
+                        status_final = "SMS_ENVIADO"
+                    else:
+                        logging.warning(f"ADAC - ❌ Falha ao enviar SMS/WhatsApp para {numero}")
+                        status_final = "ERRO_ENVIO"
+
+            except ImportError as e:
+                logging.error(f"ADAC - ❌ Módulo SMS ou WhatsApp não encontrado: {e}")
+                status_final = "ERRO_ENVIO"
             except Exception as e:
-                logging.error(f"ADAC - ❌ Erro ao enviar SMS: {e}")
+                logging.error(f"ADAC - ❌ Erro ao enviar WhatsApp/SMS: {e}")
+                status_final = "ERRO_ENVIO"
 
         # Limpar estado final
         executar_comando_adb("shell input keyevent KEYCODE_ENDCALL", device_serial)
